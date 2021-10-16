@@ -1,2 +1,2 @@
 # meet-transcriber-webapp
-Google Meet Realtime Transcriber and applying ML/DL algorithms for better analysis.
+Transcribing Google Meet conversations in Realtime and applying ML/DL Algorithms for better Analysis.
