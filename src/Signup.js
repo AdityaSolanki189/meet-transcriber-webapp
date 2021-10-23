@@ -5,6 +5,8 @@ import { Alert } from "@mui/material";
 import { colours } from "./theme/colors";
 import { useState, useContext } from "react";
 import { AuthContext } from "./AuthProvider";
+import { Link } from "react-router-dom";
+import signupPageLogo from "./signupPageLogo.svg";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -36,6 +38,14 @@ export default function SignUp() {
 
   return (
     <div>
+      <div style={{ width: "50vw", height: "50vh", margin: "auto" }}>
+        <img
+          src={signupPageLogo}
+          style={{ width: "100%", height: "100%" }}
+          alt="Landing Page Logo"
+        ></img>
+      </div>
+
       <h1 style={{ color: colours.blue }}>Sign up</h1>
 
       {error ? (
@@ -111,6 +121,15 @@ export default function SignUp() {
           Sign Up
         </Button>
       </Card>
+      <h2 style={{ color: colours.lightBlue }}>
+        Have an account?{" "}
+        <Link
+          to="/"
+          style={{ textDecoration: "none", color: colours.lightBlue }}
+        >
+          <em>Sign In!</em>
+        </Link>
+      </h2>
     </div>
   );
 }

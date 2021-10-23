@@ -5,8 +5,26 @@ import Card from "@mui/material/Card";
 import { Alert } from "@mui/material";
 import { colours } from "./theme/colors";
 import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "./AuthProvider";
 
 export default function LandingPage() {
+  const { logIn, error, loading } = useContext(AuthContext);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function onChangeHandler(event, type) {
+    if (type === "email") {
+      setEmail(event.target.value);
+    } else if (type === "password") {
+      setPassword(event.target.value);
+    }
+  }
+
+  function logInHandler() {
+    logIn(email, password);
+  }
   return (
     <div className="landingPage-wrapper">
       <div style={{ width: "50vw", height: "100vh" }}>
@@ -33,15 +51,15 @@ export default function LandingPage() {
         >
           Your Transciptor
         </h1>
-        <h1 style={{ color: "#00b0ff" }}>Log In</h1>
+        <h1 style={{ color: colours.lightBlue }}>Log In</h1>
 
-        {/* {error ? (
+        {error ? (
           <Alert severity="error" sx={{ width: "30%", margin: "2rem auto" }}>
             {error}
           </Alert>
         ) : (
           <div></div>
-        )} */}
+        )}
 
         <Card
           sx={{
@@ -61,7 +79,7 @@ export default function LandingPage() {
               margin="normal"
               required
               onChange={(event) => {
-                // onChangeHandler(event, "email");
+                onChangeHandler(event, "email");
               }}
             />
           </div>
@@ -77,27 +95,27 @@ export default function LandingPage() {
               margin="normal"
               required
               onChange={(event) => {
-                // onChangeHandler(event, "password");
+                onChangeHandler(event, "password");
               }}
             />
           </div>
 
           <Button
             onClick={() => {
-              // logInHandler();
+              logInHandler();
             }}
-            sx={{ margin: "1rem", backgroundColor: "#00b0ff" }}
+            sx={{ margin: "1rem", backgroundColor: colours.lightBlue }}
             variant="contained"
-            // disabled={loading}
+            disabled={loading}
           >
             Log In
           </Button>
         </Card>
-        <h2 style={{ color: "#00b0ff" }}>
+        <h2 style={{ color: colours.lightBlue }}>
           Don't have an account?{" "}
           <Link
             to="/signup"
-            style={{ textDecoration: "none", color: "#00b0ff" }}
+            style={{ textDecoration: "none", color: colours.lightBlue }}
           >
             <em>Sign up!</em>
           </Link>
