@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.landingPage-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}

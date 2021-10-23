@@ -1,6 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 
 import { auth, onAuthStateChanged } from "./config/Firebase";
+import { collection, addDoc } from "@firebase/firestore";
+import { db } from "./config/Firebase";
 
 import {
   createUserWithEmailAndPassword,
@@ -18,6 +20,18 @@ export default function AuthContextProvider({ children }) {
 
   const navigate = useNavigate();
 
+  async function postUserToDb(email, UID) {
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        email: email,
+        UID: UID,
+      });
+      console.log("user added with docID", docRef.id);
+    } catch (err) {
+      console.error("Error adding document: ", err);
+    }
+  }
+
   async function signUp(email, password) {
     try {
       setErorr("");
@@ -27,10 +41,8 @@ export default function AuthContextProvider({ children }) {
         email,
         password
       );
-
+      postUserToDb(email, response.user.uid);
       navigate("/login");
-
-      console.log(response);
     } catch (err) {
       console.log(err);
       setErorr(err.message);
