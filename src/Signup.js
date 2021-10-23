@@ -7,6 +7,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "./AuthProvider";
 import { Link } from "react-router-dom";
 import signupPageLogo from "./signupPageLogo.svg";
+import onChangeHandler from "./utils/onChangeHandler";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -15,16 +16,6 @@ export default function SignUp() {
 
   const { signUp, error, loading, setErorr, setLoading } =
     useContext(AuthContext);
-
-  function onChangeHandler(event, type) {
-    if (type === "email") {
-      setEmail(event.target.value);
-    } else if (type === "password") {
-      setPassword(event.target.value);
-    } else if (type === "confirmPassword") {
-      setConfirmPassword(event.target.value);
-    }
-  }
 
   function signUpHandler() {
     if (password === confirmPassword) {
@@ -74,7 +65,13 @@ export default function SignUp() {
             margin="normal"
             required
             onChange={(event) => {
-              onChangeHandler(event, "email");
+              onChangeHandler(
+                event,
+                "email",
+                setEmail,
+                setPassword,
+                setConfirmPassword
+              );
             }}
           />
         </div>
@@ -90,7 +87,13 @@ export default function SignUp() {
             margin="normal"
             required
             onChange={(event) => {
-              onChangeHandler(event, "password");
+              onChangeHandler(
+                event,
+                "password",
+                setEmail,
+                setPassword,
+                setConfirmPassword
+              );
             }}
           />
         </div>
@@ -106,7 +109,13 @@ export default function SignUp() {
             margin="normal"
             required
             onChange={(event) => {
-              onChangeHandler(event, "confirmPassword");
+              onChangeHandler(
+                event,
+                "confirmPassword",
+                setEmail,
+                setPassword,
+                setConfirmPassword
+              );
             }}
           />
         </div>
