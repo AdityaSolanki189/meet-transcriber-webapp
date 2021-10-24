@@ -38,7 +38,8 @@
 }
 
 .landingPage-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: "#1976d2";
 }

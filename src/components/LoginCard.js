@@ -7,12 +7,17 @@ import { AuthContext } from "../AuthProvider";
 import { colours } from "../theme/colors.js";
 import { Link } from "react-router-dom";
 import { Alert } from "@mui/material";
+import "../App.css";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
 
 export default function LoginCard({ cardWidthLG, cardWidthXS }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { logIn, error, loading } = useContext(AuthContext);
+  const { logIn, error, loading, modeStyle, theme, setTheme } =
+    useContext(AuthContext);
 
   return (
     <div>
@@ -30,38 +35,55 @@ export default function LoginCard({ cardWidthLG, cardWidthXS }) {
           width: { lg: cardWidthLG, xs: cardWidthXS },
           margin: "0rem auto",
           paddingBottom: "1rem",
+          backgroundColor: modeStyle.elementBackgroundColor,
         }}
       >
         <div style={{ width: "60%", margin: "auto" }}>
-          {" "}
-          <TextField
-            fullWidth
-            id="standard-basic"
-            label="Email"
+          <FormControl
             variant="standard"
-            type="email"
-            margin="normal"
+            fullWidth={true}
             required
-            onChange={(event) => {
-              onChangeHandler(event, "email", setEmail, setPassword, null);
-            }}
-          />
+            margin="normal"
+          >
+            <InputLabel
+              htmlFor="component-simple"
+              sx={{ color: modeStyle.placeholderColor }}
+            >
+              Email
+            </InputLabel>
+            <Input
+              id="component-simple"
+              sx={{ color: modeStyle.textColor }}
+              type="email"
+              onChange={(event) => {
+                onChangeHandler(event, "email", setEmail, setPassword, null);
+              }}
+            />
+          </FormControl>
         </div>
 
         <div style={{ width: "60%", margin: "auto" }}>
-          {" "}
-          <TextField
-            fullWidth
-            id="standard-basic"
-            label="Password"
+          <FormControl
             variant="standard"
-            type="password"
-            margin="normal"
+            fullWidth={true}
             required
-            onChange={(event) => {
-              onChangeHandler(event, "password", setEmail, setPassword, null);
-            }}
-          />
+            margin="normal"
+          >
+            <InputLabel
+              htmlFor="component-simple"
+              sx={{ color: modeStyle.placeholderColor }}
+            >
+              Password
+            </InputLabel>
+            <Input
+              id="component-simple"
+              onChange={(event) => {
+                onChangeHandler(event, "password", setEmail, setPassword, null);
+              }}
+              sx={{ color: modeStyle.textColor }}
+              type="password"
+            />
+          </FormControl>
         </div>
 
         <Button

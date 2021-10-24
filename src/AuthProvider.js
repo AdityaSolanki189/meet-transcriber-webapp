@@ -10,6 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { colours } from "./theme/colors";
 
 export const AuthContext = createContext();
 
@@ -17,6 +18,23 @@ export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setErorr] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [theme, setTheme] = useState("LIGHT");
+
+  const modeStyle =
+    theme === "LIGHT"
+      ? {
+          backgroundColor: "white",
+          elementBackgroundColor: "white",
+          placeholderColor: colours.grey,
+          textColor: "black",
+        }
+      : {
+          backgroundColor: "black",
+          elementBackgroundColor: "black",
+          placeholderColor: colours.blue,
+          textColor: "white",
+        };
 
   const navigate = useNavigate();
 
@@ -96,6 +114,9 @@ export default function AuthContextProvider({ children }) {
         setLoading,
         logIn,
         logout,
+        modeStyle,
+        theme,
+        setTheme,
       }}
     >
       {!loading && children}
