@@ -16,8 +16,7 @@ export default function LoginCard({ cardWidthLG, cardWidthXS }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { logIn, error, loading, modeStyle, theme, setTheme } =
-    useContext(AuthContext);
+  const { logIn, error, loading, modeStyle } = useContext(AuthContext);
 
   return (
     <div>

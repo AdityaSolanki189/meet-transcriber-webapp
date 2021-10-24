@@ -16,7 +16,7 @@ export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [error, setErorr] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [theme, setTheme] = useState("LIGHT");
@@ -52,7 +52,7 @@ export default function AuthContextProvider({ children }) {
 
   async function signUp(email, password) {
     try {
-      setErorr("");
+      setError("");
       setLoading(true);
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -63,7 +63,7 @@ export default function AuthContextProvider({ children }) {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
@@ -71,13 +71,13 @@ export default function AuthContextProvider({ children }) {
   async function logIn(email, password) {
     try {
       setLoading(true);
-      setErorr("");
+      setError("");
       const response = await signInWithEmailAndPassword(auth, email, password);
       navigate("/home");
       console.log(response);
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
@@ -85,13 +85,13 @@ export default function AuthContextProvider({ children }) {
   async function logout() {
     try {
       setLoading(true);
-      setErorr("");
+      setError("");
       const response = signOut(auth);
       navigate("/");
       console.log(response);
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
@@ -110,7 +110,7 @@ export default function AuthContextProvider({ children }) {
         signUp,
         error,
         loading,
-        setErorr,
+        setError,
         setLoading,
         logIn,
         logout,

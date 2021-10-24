@@ -14,13 +14,18 @@ export default function LandingPage() {
       className="landingPage-wrapper"
       style={{ backgroundColor: modeStyle.backgroundColor }}
     >
-      <Checkbox
-        icon={<DarkModeOutlinedIcon />}
-        checkedIcon={<DarkModeIcon />}
-        onChange={() => {
-          theme === "LIGHT" ? setTheme("DARK") : setTheme("LIGHT");
-        }}
-      />
+      <div style={{ textAlign: "right" }}>
+        {" "}
+        <Checkbox
+          icon={<DarkModeOutlinedIcon />}
+          checkedIcon={<DarkModeIcon />}
+          onChange={() => {
+            theme === "LIGHT" ? setTheme("DARK") : setTheme("LIGHT");
+          }}
+          sx={{ margin: "1rem" }}
+        />
+      </div>
+
       <div
         style={{
           display: "flex",
