@@ -40,6 +40,30 @@
 .landingPage-wrapper {
 }
 
-.MuiInputLabel-root.Mui-focused {
-  color: "#1976d2";
+.homePage-wrapper {
+  display: grid;
+  grid-template-areas:
+    "n m m"
+    "n m m"
+    "n m m";
+  grid-template-columns: 0.2fr 0.8fr;
+}
+
+.homePage-nav {
+  grid-area: n;
+  background-color: rgb(255, 255, 255);
+  min-height: 100vh;
+  box-shadow: 5px 10px 18px #eaeee2;
+  display: grid;
+  grid-template-rows: 0.2fr 0.79fr 0.01fr;
+  grid-template-areas:
+    "b b b"
+    "m m m"
+    "l l l";
+  margin-right: 1rem;
+}
+
+.homePage-main {
+  grid-area: m;
+  background-color: white;
 }

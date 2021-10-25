@@ -15,7 +15,9 @@ import { colours } from "./theme/colors";
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(
+    localStorage.getItem("userEmail")
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -73,6 +75,7 @@ export default function AuthContextProvider({ children }) {
       setLoading(true);
       setError("");
       const response = await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("userEmail", response.user.email);
       navigate("/home");
       console.log(response);
     } catch (err) {
@@ -87,7 +90,6 @@ export default function AuthContextProvider({ children }) {
       setLoading(true);
       setError("");
       const response = signOut(auth);
-      navigate("/");
       console.log(response);
     } catch (err) {
       console.log(err);
@@ -99,7 +101,9 @@ export default function AuthContextProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      console.log(" at authProvider use Effect", user);
     });
+
     return unsubscribe;
   }, []);
 
@@ -107,6 +111,7 @@ export default function AuthContextProvider({ children }) {
     <AuthContext.Provider
       value={{
         currentUser,
+        setCurrentUser,
         signUp,
         error,
         loading,
