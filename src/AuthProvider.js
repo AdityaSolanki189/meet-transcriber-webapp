@@ -10,13 +10,33 @@ import {
   signOut,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { colours } from "./theme/colors";
 
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [error, setErorr] = useState("");
+  const [currentUser, setCurrentUser] = useState(
+    localStorage.getItem("userEmail")
+  );
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [theme, setTheme] = useState("LIGHT");
+
+  const modeStyle =
+    theme === "LIGHT"
+      ? {
+          backgroundColor: "white",
+          elementBackgroundColor: "white",
+          placeholderColor: colours.grey,
+          textColor: "black",
+        }
+      : {
+          backgroundColor: "black",
+          elementBackgroundColor: "black",
+          placeholderColor: colours.blue,
+          textColor: "white",
+        };
 
   const navigate = useNavigate();
 
@@ -34,7 +54,7 @@ export default function AuthContextProvider({ children }) {
 
   async function signUp(email, password) {
     try {
-      setErorr("");
+      setError("");
       setLoading(true);
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -45,7 +65,7 @@ export default function AuthContextProvider({ children }) {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
@@ -53,13 +73,14 @@ export default function AuthContextProvider({ children }) {
   async function logIn(email, password) {
     try {
       setLoading(true);
-      setErorr("");
+      setError("");
       const response = await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("userEmail", response.user.email);
       navigate("/home");
       console.log(response);
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
@@ -67,21 +88,22 @@ export default function AuthContextProvider({ children }) {
   async function logout() {
     try {
       setLoading(true);
-      setErorr("");
+      setError("");
       const response = signOut(auth);
-      navigate("/");
       console.log(response);
     } catch (err) {
       console.log(err);
-      setErorr(err.message);
+      setError(err.message);
     }
     setLoading(false);
   }
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      console.log(" at authProvider use Effect", user);
     });
+
     return unsubscribe;
   }, []);
 
@@ -89,13 +111,17 @@ export default function AuthContextProvider({ children }) {
     <AuthContext.Provider
       value={{
         currentUser,
+        setCurrentUser,
         signUp,
         error,
         loading,
-        setErorr,
+        setError,
         setLoading,
         logIn,
         logout,
+        modeStyle,
+        theme,
+        setTheme,
       }}
     >
       {!loading && children}
