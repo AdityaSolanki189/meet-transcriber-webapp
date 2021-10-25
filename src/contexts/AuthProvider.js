@@ -1,8 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
-import { auth, onAuthStateChanged } from "./config/Firebase";
+import { auth, onAuthStateChanged, db } from "../config/Firebase";
 import { collection, addDoc } from "@firebase/firestore";
-import { db } from "./config/Firebase";
 
 import {
   createUserWithEmailAndPassword,
@@ -10,7 +9,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { colours } from "./theme/colors";
+import { colours } from "../theme/colors";
 
 export const AuthContext = createContext();
 
@@ -103,7 +102,6 @@ export default function AuthContextProvider({ children }) {
       setCurrentUser(user);
       console.log(" at authProvider use Effect", user);
     });
-
     return unsubscribe;
   }, []);
 

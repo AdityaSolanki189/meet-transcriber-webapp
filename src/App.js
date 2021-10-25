@@ -1,10 +1,10 @@
 import "./App.css";
-import SignUp from "./Signup";
-import Login from "./Login";
-import Home from "./Home";
+import SignUp from "./pages/Signup";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
-import LandingPage from "./LandingPage";
-import PrivateRoute from "./PrivateRoute";
+import LandingPage from "./pages/LandingPage";
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
   return (

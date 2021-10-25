@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import onChangeHandler from "../utils/onChangeHandler";
 import { useContext, useState } from "react";
-import { AuthContext } from "../AuthProvider";
+import { AuthContext } from "../contexts/AuthProvider";
 import { colours } from "../theme/colors.js";
 import { Link } from "react-router-dom";
 import { Alert } from "@mui/material";

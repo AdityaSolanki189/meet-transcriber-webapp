@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../contexts/AuthProvider";
 import { signOut } from "firebase/auth";
-import { auth } from "./config/Firebase";
+import { auth } from "../config/Firebase";
 import { useNavigate } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import { colours } from "./theme/colors";
+import { colours } from "../theme/colors";
 import { Checkbox } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";

@@ -1,13 +1,13 @@
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import { Alert } from "@mui/material";
-import { colours } from "./theme/colors";
+import { colours } from "../theme/colors";
 import { useState, useContext } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../contexts/AuthProvider";
 import { Link } from "react-router-dom";
-import signupPageLogo from "./signupPageLogo.svg";
-import onChangeHandler from "./utils/onChangeHandler";
-import signUpHandler from "./utils/signUpHandler";
+import signupPageLogo from "../resources/signupPageLogo.svg";
+import onChangeHandler from "../utils/onChangeHandler";
+import signUpHandler from "../utils/signUpHandler";
 import { Checkbox } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";

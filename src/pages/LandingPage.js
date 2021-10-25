@@ -1,8 +1,8 @@
-import landingPageLogo from "./landingPageLogo.svg";
-import { colours } from "./theme/colors";
-import LoginCard from "./components/LoginCard";
+import landingPageLogo from "../resources/landingPageLogo.svg";
+import { colours } from "../theme/colors";
+import LoginCard from "../components/LoginCard";
 import { useContext } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../contexts/AuthProvider";
 import { Checkbox } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";

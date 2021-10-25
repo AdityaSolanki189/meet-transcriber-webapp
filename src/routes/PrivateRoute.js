@@ -1,8 +1,8 @@
 import { Route, Navigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../contexts/AuthProvider";
 import { onAuthStateChanged } from "@firebase/auth";
-import { auth } from "./config/Firebase";
+import { auth } from "../config/Firebase";
 
 export default function PrivateRoute({ path, ...props }) {
   const { currentUser, setCurrentUser } = useContext(AuthContext);
@@ -12,7 +12,6 @@ export default function PrivateRoute({ path, ...props }) {
       setCurrentUser(user);
       console.log(" at Private ROuet use Effect", user);
     });
-
     return unsubscribe;
   }, []);
 
