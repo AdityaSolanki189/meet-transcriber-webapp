@@ -15,7 +15,7 @@ export default function PrivateRoute({ path, ...props }) {
     return unsubscribe;
   }, []);
 
-  console.log(currentUser, "at Privatetoute");
+  console.log(currentUser, "at PrivateRoute");
 
   return currentUser ? (
     // console.log(currentUser)

@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import { Alert } from "@mui/material";
+import { Alert, Checkbox } from "@mui/material";
 import { colours } from "../theme/colors";
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import signupPageLogo from "../resources/signupPageLogo.svg";
 import onChangeHandler from "../utils/onChangeHandler";
 import signUpHandler from "../utils/signUpHandler";
-import { Checkbox } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import FormControl from "@mui/material/FormControl";
@@ -16,6 +15,7 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 
 export default function SignUp() {
+  //const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
