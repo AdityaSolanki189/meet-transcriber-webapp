@@ -8,11 +8,11 @@ export default function PrivateRoute({ path, ...props }) {
   const { currentUser, setCurrentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    return onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       console.log(" at Private ROuet use Effect", user);
     });
-    return unsubscribe;
+    // return unsubscribe;
   }, []);
 
   console.log(currentUser, "at PrivateRoute");

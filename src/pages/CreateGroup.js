@@ -1,10 +1,21 @@
 import React, {useState} from 'react';
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthProvider";
 import {Multiselect} from 'multiselect-react-dropdown';
 import { Link } from "react-router-dom";
 import SideMenu from "../components/SideMenu";
+import { Checkbox } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import "./CreateGroup.css";
 
 function CreateGroup() {
+
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const { modeStyle, theme, setTheme } = useContext(AuthContext);
 
     const [inputText,
         setInputText] = useState('');
@@ -62,42 +73,58 @@ function CreateGroup() {
             <div className="Page-nav">
                 <SideMenu/>
             </div>
-            <div className="Page-main create">
-                <form onSubmit={submitMeetHandler}>
-                    <h2>Creating Meet-Groups</h2>
+            <div className="Page-main">
+                {" "}
+                <div style={{ textAlign: "right" }}>
+                    {" "}
+                    <Checkbox
+                        icon={<DarkModeOutlinedIcon />}
+                        checkedIcon={<DarkModeIcon />}
+                        onChange={() => {
+                            theme === "LIGHT" ? setTheme("DARK") : setTheme("LIGHT");
+                        }}
+                        sx={{ margin: "1rem" }}
+                    />
+                </div>
+                <div className="create">
+                    <form onSubmit={submitMeetHandler}>
+                        <h2>Creating Meet-Groups</h2>
 
-                    <input
-                        value={inputText}
-                        onChange={inputTextHandler}
-                        type="text"
-                        placeholder="Enter Meet Link..."
-                        className="meet-input"/>
-                    <button>
-                        check link
-                    </button>
-                </form>
-
-                {!onSubmit && <div className='create-error'>
-                    {errorMsg}
-                </div>}
-                {onSubmit && <div className='create-invite'>
-                    Hola! Now Lets Invite Your Friends.
-                    <br />
-                    Your Meet Link : <span style={{fontWeight:"bold"}}>{meetLink}</span>
-                    <Multiselect options={options} displayValue="email"/>
-                    
-                    <Link to={`/group/${meetId}`} 
-                        onClick={createGroupHandler}
-                        style={{
-                        color: "var(--primary-color)",
-                        border: "1px solid var(--primary-color)",
-                        borderRadius: "8px",
-                    }}>
+                        <input
+                            value={inputText}
+                            onChange={inputTextHandler}
+                            type="text"
+                            placeholder="Enter Meet Link..."
+                            className="meet-input"/>
                         <button>
-                            Create Group
-                        </button>                    
-                    </Link>
-                </div>}
+                            check link
+                        </button>
+                    </form>
+
+                    {!onSubmit && <div className='create-error'>
+                        {errorMsg}
+                    </div>}
+                    {onSubmit && <div className='create-invite'>
+                        Hola! Now Lets Invite Your Friends.
+                        <br />
+                        Your Meet Link : <span style={{fontWeight:"bold"}}>{meetLink}</span>
+                        <Multiselect options={options} displayValue="email"/>
+                        
+                        <Link to={`/group/${meetId}`} 
+                            onClick={createGroupHandler}
+                            style={{
+                            color: "var(--primary-color)",
+                            border: "1px solid var(--primary-color)",
+                            borderRadius: "8px",
+                        }}>
+                            <Link to={`/meet-group/${meetId}`}>
+                                <button>
+                                    Create Group
+                                </button>  
+                            </Link>             
+                        </Link>
+                    </div>}
+                </div>
             </div>
         </div>
     );
