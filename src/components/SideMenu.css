@@ -1,0 +1,125 @@
+/* Side-Menu Navbar */
+
+.side-menu{
+    position: fixed;
+    background: #E5E7EB;
+    width: 300px;
+    height: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    box-shadow: 10px 0 5px -2px rgba(189, 188, 188, 0.486);
+    z-index: 1000;
+    transition: width 0.2s ease-in;
+}
+
+.side-menu .top-section .app-name{
+    font-weight: bolder;
+}
+
+.side-menu .top-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10px 10px;
+    padding: 0px;
+    position: relative;
+}
+
+.side-menu .collapse {
+    text-align: right;
+}
+
+.side-menu .collapse svg{
+    width: 25px;
+    height: 25px;
+    right: 0px;
+}
+
+.side-menu .mid-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.side-menu .mid-section .create-groups, .groups, .direct-home{
+    margin-top: 20px;
+    padding: auto;
+}
+
+.side-menu .mid-section .create-groups button, .groups button, .direct-home button{
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+    margin: 1rem 0rem;
+    border: none;
+}
+
+.side-menu .mid-section .create-groups button:hover , .groups button:hover, .direct-home button:hover{
+    font-size: 26px;
+    font-weight: bolder;
+}
+
+.side-menu.inactive{
+    width: 80px;
+}
+
+.side-menu.inactive .collapse svg{
+    position: absolute;
+    right: -50px;
+}
+
+.side-menu .footer{
+    width: 100%;
+    height: 120px;
+    background-color: rgba(229, 231, 235, 0.4);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 0px 10px;
+    border-top: 1px solid gray;
+    border-radius: 2px;
+}
+
+.side-menu .footer .about-user{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.side-menu .footer .about-user .user-info{
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.side-menu .footer .about-user img{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.side-menu .footer .user-btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    padding: 0px 20px;
+    font-weight: bold;
+
+    font-size: 16px;
+    width: 100%;
+    margin: 1rem 0rem;
+    border: none;
+}
+
+ .side-menu .footer Link.user-btns button{
+    border: none;
+} 
+
+.side-menu .footer .user-btns button:hover{
+    font-size: 15px;
+    font-weight: bolder;
+}
