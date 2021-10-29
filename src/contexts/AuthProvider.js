@@ -35,6 +35,7 @@ export default function AuthContextProvider({ children }) {
           elementBackgroundColor: "black",
           placeholderColor: colours.blue,
           textColor: "white",
+          subTextColor: colours.lightGray,
         };
 
   const navigate = useNavigate();
