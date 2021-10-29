@@ -58,6 +58,7 @@
 .side-menu .mid-section .create-groups button:hover , .groups button:hover, .direct-home button:hover{
     font-size: 26px;
     font-weight: bolder;
+    cursor: pointer;
 }
 
 .side-menu.inactive{
@@ -122,4 +123,5 @@
 .side-menu .footer .user-btns button:hover{
     font-size: 15px;
     font-weight: bolder;
+    cursor: pointer;
 }
