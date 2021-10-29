@@ -1,69 +1,80 @@
+@import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    font-family: "Quicksand";
+}
+
+:root {
+    --primary-color: #2563EB;
+    --secondary-color: #60A5FA;
+    --dark-gray: rgb(107, 114, 128);
+    --light-gray: rgb(229, 231, 235);
+}
+
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
-
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
-
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-.landingPage-wrapper {
-}
+/* .landingPage-wrapper {} */
 
-.homePage-wrapper {
-  display: grid;
-  grid-template-areas:
-    "n m m"
-    "n m m"
+.Page-wrapper {
+    display: grid;
+    grid-template-areas: 
+    "n m m" 
+    "n m m" 
     "n m m";
-  grid-template-columns: 0.2fr 0.8fr;
+    grid-template-columns: 0.2fr 0.8fr;
 }
 
-.homePage-nav {
-  grid-area: n;
-  background-color: rgb(255, 255, 255);
-  min-height: 100vh;
-  box-shadow: 5px 10px 18px #eaeee2;
-  display: grid;
-  grid-template-rows: 0.2fr 0.79fr 0.01fr;
-  grid-template-areas:
-    "b b b"
-    "m m m"
+.Page-nav {
+    grid-area: n;
+    /* background-color: rgb(255, 255, 255);
+    min-height: 100vh;
+    box-shadow: 5px 10px 18px #eaeee2;
+    display: grid;
+    grid-template-rows: 0.2fr 0.79fr 0.01fr;
+    grid-template-areas: 
+    "b b b" 
+    "m m m" 
     "l l l";
-  margin-right: 1rem;
+    margin-right: 1rem; */
 }
 
-.homePage-main {
-  grid-area: m;
-  background-color: white;
+.Page-main {
+    grid-area: m;
+    background-color: white;
 }
