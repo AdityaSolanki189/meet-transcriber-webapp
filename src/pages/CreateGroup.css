@@ -1,0 +1,45 @@
+/* Create Page */
+
+.create {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.create label {
+    font-size: larger;
+    font-weight: 600;
+    text-align: left;
+    display: block;
+}
+
+.create h2 {
+    font-size: 35px;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    margin-top: 50px;
+}
+
+.create input,
+.create select,
+.create textarea {
+    width: 100%;
+    font-size: large;
+    font-weight: 500;
+    padding: 6px 10px;
+    margin: 10px 0;
+    border: 1px solid var(--dark-gray);
+    box-sizing: border-box;
+    display: block;
+}
+
+.create button {
+    font-size: 20px;
+    background: var(--primary-color);
+    color: white;
+    border: 0;
+    margin: 15px 0;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
