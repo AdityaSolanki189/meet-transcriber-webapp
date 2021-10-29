@@ -78,3 +78,10 @@
     grid-area: m;
     background-color: white;
 }
+
+.not-found{
+    margin-top: 150px;
+}
+.not-found p:hover{
+    font-size: large;
+}

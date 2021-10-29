@@ -8,6 +8,8 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserGroups from "./pages/UserGroups";
+import Group from "./components/Group";
+import NotFound from "./pages/NotFound";
 
 function App() {
     return (
@@ -38,9 +40,17 @@ function App() {
                 element={<UserGroups/>}>
             </PrivateRoute>
             <PrivateRoute 
+                path="/user-group/:id" 
+                element={<Group/>}>
+            </PrivateRoute>
+            <PrivateRoute 
                 path="/edit-profile" 
                 element={<EditProfile/>}>
             </PrivateRoute>
+            <Route 
+                path="*" 
+                element={<NotFound/>}>
+            </Route>
         </Routes>}
     </div>
   );
