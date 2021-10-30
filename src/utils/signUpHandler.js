@@ -3,11 +3,12 @@ export default function signUpHandler(
   password,
   confirmPassword,
   email,
+  username,
   setError,
   setLoading
 ) {
   if (password === confirmPassword) {
-    signUp(email, password);
+    signUp(username, email, password);
   } else {
     setError("Passwords do not match");
     setLoading(false);

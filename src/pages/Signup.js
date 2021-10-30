@@ -15,7 +15,7 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 
 export default function SignUp() {
-  //const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -81,6 +81,38 @@ export default function SignUp() {
           backgroundColor: modeStyle.elementBackgroundColor,
         }}
       >
+
+        <div style={{ width: "60%", margin: "auto" }}>
+          <FormControl
+            variant="standard"
+            fullWidth={true}
+            required
+            margin="normal"
+          >
+            <InputLabel
+              htmlFor="component-simple"
+              sx={{ color: modeStyle.placeholderColor }}
+            >
+              Username
+            </InputLabel>
+            <Input
+              id="component-simple"
+              sx={{ color: modeStyle.textColor }}
+              type="username"
+              onChange={(event) => {
+                onChangeHandler(
+                  event,
+                  "username",
+                  setUsername,
+                  setEmail,
+                  setPassword,
+                  setConfirmPassword
+                );
+              }}
+            />
+          </FormControl>
+        </div>
+
         <div style={{ width: "60%", margin: "auto" }}>
           <FormControl
             variant="standard"
@@ -102,6 +134,7 @@ export default function SignUp() {
                 onChangeHandler(
                   event,
                   "email",
+                  setUsername,
                   setEmail,
                   setPassword,
                   setConfirmPassword
@@ -132,6 +165,7 @@ export default function SignUp() {
                 onChangeHandler(
                   event,
                   "password",
+                  setUsername,
                   setEmail,
                   setPassword,
                   setConfirmPassword
@@ -162,6 +196,7 @@ export default function SignUp() {
                 onChangeHandler(
                   event,
                   "confirmPassword",
+                  setUsername,
                   setEmail,
                   setPassword,
                   setConfirmPassword
@@ -178,6 +213,7 @@ export default function SignUp() {
               password,
               confirmPassword,
               email,
+              username,
               setError,
               setLoading
             );

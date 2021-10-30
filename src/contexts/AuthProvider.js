@@ -2,7 +2,10 @@ import {createContext, useEffect, useState} from "react";
 
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {collection, addDoc} from "@firebase/firestore";
+<<<<<<< HEAD
 import {doc, getDoc} from "firebase/firestore";
+=======
+>>>>>>> 71c2eb7690a6e4a85835cb48a0fc386db27c7467
 
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
@@ -17,10 +20,16 @@ export default function AuthContextProvider({children}) {
         setError] = useState("");
     const [loading,
         setLoading] = useState(false);
+<<<<<<< HEAD
 
     const [theme,
         setTheme] = useState("LIGHT");
 
+=======
+    const [theme,
+        setTheme] = useState("LIGHT");
+
+>>>>>>> 71c2eb7690a6e4a85835cb48a0fc386db27c7467
     const modeStyle = theme === "LIGHT"
         ? {
             backgroundColor: "white",
@@ -38,9 +47,16 @@ export default function AuthContextProvider({children}) {
 
     const navigate = useNavigate();
 
+<<<<<<< HEAD
     async function postUserToDb(email, UID) {
         try {
             const docRef = await addDoc(collection(db, "users"), {
+=======
+    async function postUserToDb(username, email, UID) {
+        try {
+            const docRef = await addDoc(collection(db, "users"), {
+                name: username,
+>>>>>>> 71c2eb7690a6e4a85835cb48a0fc386db27c7467
                 email: email,
                 UID: UID
             });
@@ -49,29 +65,13 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
-    async function getUserFromDb(UID) {
-        try {
-            const docRef = doc(db, "cities", "SF");
-            const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
-                return docSnap.data();
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    async function signUp(email, password) {
+    async function signUp(username, email, password) {
         try {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            postUserToDb(email, response.user.uid);
+            postUserToDb(username, email, response.user.uid);
             navigate("/login");
         } catch (err) {
             console.log(err);
@@ -109,11 +109,11 @@ export default function AuthContextProvider({children}) {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        return onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             console.log(" at authProvider use Effect", user);
         });
-        return unsubscribe;
+        //return unsubscribe;
     }, []);
 
     return (
@@ -130,8 +130,7 @@ export default function AuthContextProvider({children}) {
             logout,
             modeStyle,
             theme,
-            setTheme,
-			getUserFromDb
+            setTheme
         }}>
             {!loading && children}
         </AuthContext.Provider>
