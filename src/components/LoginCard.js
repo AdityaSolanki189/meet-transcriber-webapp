@@ -26,7 +26,6 @@ export default function LoginCard({cardWidthLG, cardWidthXS}) {
                 color: colours.lightBlue
             }}>Log In</h1>
 
-<<<<<<< HEAD
             {error
                 ? (
                     <Alert
@@ -71,7 +70,7 @@ export default function LoginCard({cardWidthLG, cardWidthXS}) {
                         }}
                             type="email"
                             onChange={(event) => {
-                            onChangeHandler(event, "email", setEmail, setPassword, null);
+                            onChangeHandler(event, "email", null, setEmail, setPassword, null);
                         }}/>
                     </FormControl>
                 </div>
@@ -92,7 +91,7 @@ export default function LoginCard({cardWidthLG, cardWidthXS}) {
                         <Input
                             id="component-simple"
                             onChange={(event) => {
-                            onChangeHandler(event, "password", setEmail, setPassword, null);
+                            onChangeHandler(event, "password", null, setEmail, setPassword, null);
                         }}
                             sx={{
                             color: modeStyle.textColor
@@ -100,70 +99,6 @@ export default function LoginCard({cardWidthLG, cardWidthXS}) {
                             type="password"/>
                     </FormControl>
                 </div>
-=======
-      {error ? (
-        <Alert severity="error" sx={{ width: "30%", margin: "2rem auto" }}>
-          {error}
-        </Alert>
-      ) : (
-        <div></div>
-      )}
-      <Card
-        sx={{
-          width: { lg: cardWidthLG, xs: cardWidthXS },
-          margin: "0rem auto",
-          paddingBottom: "1rem",
-          backgroundColor: modeStyle.elementBackgroundColor,
-        }}
-      >
-        <div style={{ width: "60%", margin: "auto" }}>
-          <FormControl
-            variant="standard"
-            fullWidth={true}
-            required
-            margin="normal"
-          >
-            <InputLabel
-              htmlFor="component-simple"
-              sx={{ color: modeStyle.placeholderColor }}
-            >
-              Email
-            </InputLabel>
-            <Input
-              id="component-simple"
-              sx={{ color: modeStyle.textColor }}
-              type="email"
-              onChange={(event) => {
-                onChangeHandler(event, "email", null, setEmail, setPassword, null);
-              }}
-            />
-          </FormControl>
-        </div>
-
-        <div style={{ width: "60%", margin: "auto" }}>
-          <FormControl
-            variant="standard"
-            fullWidth={true}
-            required
-            margin="normal"
-          >
-            <InputLabel
-              htmlFor="component-simple"
-              sx={{ color: modeStyle.placeholderColor }}
-            >
-              Password
-            </InputLabel>
-            <Input
-              id="component-simple"
-              onChange={(event) => {
-                onChangeHandler(event, "password", null, setEmail, setPassword, null);
-              }}
-              sx={{ color: modeStyle.textColor }}
-              type="password"
-            />
-          </FormControl>
-        </div>
->>>>>>> 71c2eb7690a6e4a85835cb48a0fc386db27c7467
 
                 <Button
                     onClick={() => {
