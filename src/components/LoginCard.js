@@ -55,7 +55,7 @@ export default function LoginCard({ cardWidthLG, cardWidthXS }) {
               sx={{ color: modeStyle.textColor }}
               type="email"
               onChange={(event) => {
-                onChangeHandler(event, "email", setEmail, setPassword, null);
+                onChangeHandler(event, "email", null, setEmail, setPassword, null);
               }}
             />
           </FormControl>
@@ -77,7 +77,7 @@ export default function LoginCard({ cardWidthLG, cardWidthXS }) {
             <Input
               id="component-simple"
               onChange={(event) => {
-                onChangeHandler(event, "password", setEmail, setPassword, null);
+                onChangeHandler(event, "password", null, setEmail, setPassword, null);
               }}
               sx={{ color: modeStyle.textColor }}
               type="password"
