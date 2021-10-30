@@ -2,6 +2,7 @@ import {createContext, useEffect, useState} from "react";
 
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {collection, addDoc} from "@firebase/firestore";
+import {doc, getDoc} from "firebase/firestore";
 
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
@@ -48,13 +49,29 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
+    async function getUserFromDb(UID) {
+        try {
+            const docRef = doc(db, "cities", "SF");
+            const docSnap = await getDoc(docRef);
 
-    async function signUp(username, email, password) {
+            if (docSnap.exists()) {
+                console.log("Document data:", docSnap.data());
+                return docSnap.data();
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function signUp(email, password) {
         try {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            postUserToDb(username, email, response.user.uid);
+            postUserToDb(email, response.user.uid);
             navigate("/login");
         } catch (err) {
             console.log(err);
@@ -92,11 +109,11 @@ export default function AuthContextProvider({children}) {
     }
 
     useEffect(() => {
-        return onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             console.log(" at authProvider use Effect", user);
         });
-        //return unsubscribe;
+        return unsubscribe;
     }, []);
 
     return (
@@ -113,7 +130,9 @@ export default function AuthContextProvider({children}) {
             logout,
             modeStyle,
             theme,
-            setTheme
+            setTheme,
+            getUserFromDb
+
         }}>
             {!loading && children}
         </AuthContext.Provider>
