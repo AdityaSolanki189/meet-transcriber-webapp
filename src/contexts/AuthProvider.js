@@ -1,7 +1,7 @@
 import {createContext, useEffect, useState} from "react";
 
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
-import {collection, addDoc} from "@firebase/firestore";
+import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
@@ -37,21 +37,23 @@ export default function AuthContextProvider({children}) {
 
     const navigate = useNavigate();
 
-    async function postUserToDb(username, email, UID) {
+    async function postUserToDb(email, UID, username) {
         try {
-            const docRef = await addDoc(collection(db, "users"), {
+
+            const docRef = await setDoc(doc(db, "users", UID), {
                 name: username,
                 email: email,
                 UID: UID
             });
+
             console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
     }
-    async function getUserFromDb(UID) {
+    async function getUserFromDb() {
         try {
-            const docRef = doc(db, "cities", "SF");
+            const docRef = doc(db, "users");
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
@@ -66,12 +68,12 @@ export default function AuthContextProvider({children}) {
         }
     }
 
-    async function signUp(email, password) {
+    async function signUp(email, password, username) {
         try {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            postUserToDb(email, response.user.uid);
+            postUserToDb(email, response.user.uid, username);
             navigate("/login");
         } catch (err) {
             console.log(err);
@@ -132,7 +134,6 @@ export default function AuthContextProvider({children}) {
             theme,
             setTheme,
             getUserFromDb
-
         }}>
             {!loading && children}
         </AuthContext.Provider>
