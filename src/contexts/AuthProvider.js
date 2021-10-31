@@ -39,13 +39,11 @@ export default function AuthContextProvider({children}) {
 
     async function postUserToDb(email, UID, username) {
         try {
-
-            const docRef = await setDoc(doc(db, "users", UID), {
+            const docRef = await setDoc(doc(db, "users", email), {
                 name: username,
                 email: email,
                 UID: UID
             });
-
             console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
@@ -67,7 +65,18 @@ export default function AuthContextProvider({children}) {
             console.log(err)
         }
     }
+    async function postGroupToDb(email, meetID, username) {
+        try {
+            const docRef = await addDoc(collection(db, "groups"), {
+                name: username,
+                email: email
+            });
 
+            console.log("user added with docID", docRef.id);
+        } catch (err) {
+            console.error("Error adding document: ", err);
+        }
+    }
     async function signUp(email, password, username) {
         try {
             setError("");
@@ -133,7 +142,8 @@ export default function AuthContextProvider({children}) {
             modeStyle,
             theme,
             setTheme,
-            getUserFromDb
+            getUserFromDb,
+            postGroupToDb
         }}>
             {!loading && children}
         </AuthContext.Provider>

@@ -29,12 +29,10 @@ function CreateGroup() {
         setErrorMsg] = useState('');
 
     const data = [
-        {name: "Aditya", id: '1', email: 'aditya2ss283@gmail.com'},
-        {name: 'Anurag', id: '2', email: 'anuragg4@gmail.com'},
-        {name: 'Abhishek', id: '3', email: 'abhishek423@gmail.com'},
-        {name: 'Rohit', id: '4', email: 'rohitrr4@gmail.com'},
-        {name: 'Pranav', id: '5', email: 'pranavmohril343@gmail.com'},
-        {name: 'Atharva', id: '6', email: 'atharvaVeda232@gmail.com'},
+        {name: "Aditya Solanki", id: '1', email: 'aditya2ss567@gmail.com'},
+        {name: 'Anurag Patil', id: '2', email: 'anuraggp2001@gmail.com'},
+        {name: 'Abhishek Sharma', id: '3', email: 'sharma420@gmail.com'},
+        {name: 'Aditya Nair', id: '4', email: 'adityanair102001@gmail.com'}
     ]
     const [options] = useState(data);
 
@@ -63,6 +61,7 @@ function CreateGroup() {
     };
 
     const createGroupHandler = () => {
+        
         console.log('====================================');
         console.log('The Group is Created!', meetId);
         console.log('====================================');
