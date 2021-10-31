@@ -72,7 +72,7 @@ export default function Meetings() {
                     ? meetings.map(meeting => {
                         
                         return <Link
-                            to={`/user-groups/${meeting}`}
+                            to={`/user-groups/${groupID}/${meeting}`}
                             style={{
                             textDecoration: "none",
                             color: "black"
