@@ -9,6 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserGroups from "./pages/UserGroups";
 import TranscriptPage from "./pages/TranscriptPage";
+import Meetings from "./pages/Meetings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -39,9 +40,13 @@ function App() {
                 path="/user-groups" 
                 element={<UserGroups/>}>
             </PrivateRoute>
-             <PrivateRoute 
+            <PrivateRoute 
                 path="/user-groups/:groupID/:meetingID" 
                 element={<TranscriptPage/>}>
+            </PrivateRoute>           
+            <PrivateRoute 
+                path="/user-groups/:groupID" 
+                element={<Meetings/>}>
             </PrivateRoute>
             <PrivateRoute 
                 path="/edit-profile" 
@@ -57,3 +62,5 @@ function App() {
 }
 
 export default App;
+
+
