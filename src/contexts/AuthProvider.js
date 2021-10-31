@@ -51,9 +51,9 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
-    async function getUserFromDb(UID) {
+    async function getUserFromDb() {
         try {
-            const docRef = doc(db, "cities", "SF");
+            const docRef = doc(db, "users");
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
