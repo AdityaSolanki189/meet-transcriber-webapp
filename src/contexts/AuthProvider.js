@@ -1,7 +1,7 @@
 import {createContext, useEffect, useState} from "react";
 
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
-import {collection, addDoc} from "@firebase/firestore";
+import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
@@ -39,11 +39,13 @@ export default function AuthContextProvider({children}) {
 
     async function postUserToDb(email, UID, username) {
         try {
-            const docRef = await addDoc(collection(db, "users"), {
+
+            const docRef = await setDoc(doc(db, "users", UID), {
                 name: username,
                 email: email,
                 UID: UID
             });
+
             console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
@@ -132,7 +134,6 @@ export default function AuthContextProvider({children}) {
             theme,
             setTheme,
             getUserFromDb
-
         }}>
             {!loading && children}
         </AuthContext.Provider>
