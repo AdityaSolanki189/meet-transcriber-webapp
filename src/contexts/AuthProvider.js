@@ -40,7 +40,7 @@ export default function AuthContextProvider({children}) {
     async function postUserToDb(email, UID, username) {
         try {
 
-            const docRef = await setDoc(doc(db, "users", UID), {
+            const docRef = await setDoc(doc(db, "users", email), {
                 name: username,
                 email: email,
                 UID: UID
