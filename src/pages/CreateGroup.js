@@ -109,7 +109,7 @@ function CreateGroup() {
                         Your Meet Link : <span style={{fontWeight:"bold"}}>{meetLink}</span>
                         <Multiselect options={options} displayValue="email"/>
                         
-                        <Link to={`/user-group/${meetId}`} 
+                        <Link to={`/user-groups/`} 
                             onClick={createGroupHandler}
                             style={{
                             color: "var(--primary-color)",
