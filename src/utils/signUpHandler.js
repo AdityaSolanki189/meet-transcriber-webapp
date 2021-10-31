@@ -1,4 +1,3 @@
-
 export default function signUpHandler(signUp, password, confirmPassword, email, username, setError, setLoading,) {
     if (password === confirmPassword) {
         signUp(email, password, username);
@@ -7,5 +6,5 @@ export default function signUpHandler(signUp, password, confirmPassword, email, 
         setLoading(false);
         return;
     }
-  }
+}
 
