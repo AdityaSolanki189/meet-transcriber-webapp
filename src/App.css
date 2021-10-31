@@ -53,10 +53,7 @@
 
 .Page-wrapper {
     display: grid;
-    grid-template-areas: 
-    "n m m" 
-    "n m m" 
-    "n m m";
+    grid-template-areas: "n m m" "n m m" "n m m";
     grid-template-columns: 0.2fr 0.8fr;
 }
 
@@ -79,9 +76,9 @@
     background-color: white;
 }
 
-.not-found{
+.not-found {
     margin-top: 150px;
 }
-.not-found p:hover{
+.not-found p:hover {
     font-size: large;
 }
