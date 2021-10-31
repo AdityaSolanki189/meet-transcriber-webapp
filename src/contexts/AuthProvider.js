@@ -37,7 +37,7 @@ export default function AuthContextProvider({children}) {
 
     const navigate = useNavigate();
 
-    async function postUserToDb(username, email, UID) {
+    async function postUserToDb(email, UID, username) {
         try {
             const docRef = await addDoc(collection(db, "users"), {
                 name: username,
@@ -49,9 +49,9 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
-    async function getUserFromDb(UID) {
+    async function getUserFromDb() {
         try {
-            const docRef = doc(db, "cities", "SF");
+            const docRef = doc(db, "users");
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
@@ -66,12 +66,12 @@ export default function AuthContextProvider({children}) {
         }
     }
 
-    async function signUp(email, password) {
+    async function signUp(email, password, username) {
         try {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            postUserToDb(email, response.user.uid);
+            postUserToDb(email, response.user.uid, username);
             navigate("/login");
         } catch (err) {
             console.log(err);
