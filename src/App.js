@@ -8,7 +8,7 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserGroups from "./pages/UserGroups";
-import Group from "./components/Group";
+import Meetings from "./pages/Meetings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -38,11 +38,15 @@ function App() {
             <PrivateRoute 
                 path="/user-groups" 
                 element={<UserGroups/>}>
-            </PrivateRoute>
+            </PrivateRoute>           
             <PrivateRoute 
-                path="/user-group/:id" 
-                element={<Group/>}>
+                path="/user-groups/:groupID" 
+                element={<Meetings/>}>
             </PrivateRoute>
+            {/* <PrivateRoute 
+                path="/user-groups/:groupID/:meetingID" 
+                element={<Transcript/>}>
+            </PrivateRoute> */}
             <PrivateRoute 
                 path="/edit-profile" 
                 element={<EditProfile/>}>
@@ -57,3 +61,5 @@ function App() {
 }
 
 export default App;
+
+
