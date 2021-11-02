@@ -3,7 +3,7 @@ import {createContext, useEffect, useState} from "react";
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
-
+import firebase from "@firebase/app-compat";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
 import {colours} from "../theme/colors";
@@ -39,13 +39,11 @@ export default function AuthContextProvider({children}) {
 
     async function postUserToDb(email, UID, username) {
         try {
-
             const docRef = await setDoc(doc(db, "users", email), {
                 name: username,
                 email: email,
                 UID: UID
             });
-
             console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
@@ -67,7 +65,30 @@ export default function AuthContextProvider({children}) {
             console.log(err)
         }
     }
+    async function updateUserMeetsDB(email, meetLink, meetId, meetTitle) {
+        
+        try {
+            const docRef = await addDoc(collection(db, "/users/" + email + "/mygroups/" + meetId + "/mymeetings/"), {
+                Title: meetTitle,
+                Link : meetLink,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            console.log("user added with docID", docRef.id);
+        } catch (err) {
+            console.error("Error adding document: ", err);
+        }
 
+    }
+    async function postGroupToDb(members, meetLink, meetId, meetTitle) {
+        try {
+            members.map(user => {
+                updateUserMeetsDB(user.email, meetLink, meetId, meetTitle);
+            });
+            console.log("Updated Users Collection!");
+        } catch (err) {
+            console.error("Error adding document: ", err);
+        }
+    }
     async function signUp(email, password, username) {
         try {
             setError("");
@@ -133,7 +154,8 @@ export default function AuthContextProvider({children}) {
             modeStyle,
             theme,
             setTheme,
-            getUserFromDb
+            getUserFromDb,
+            postGroupToDb
         }}>
             {!loading && children}
         </AuthContext.Provider>
