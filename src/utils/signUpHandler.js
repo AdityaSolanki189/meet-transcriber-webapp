@@ -7,4 +7,3 @@ export default function signUpHandler(signUp, password, confirmPassword, email, 
         return;
     }
 }
-

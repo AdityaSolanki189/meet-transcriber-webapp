@@ -1,40 +1,61 @@
 import React, {useState} from 'react';
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthProvider";
+import {useContext} from "react";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../contexts/AuthProvider";
 import {Multiselect} from 'multiselect-react-dropdown';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import SideMenu from "../components/SideMenu";
-import { Checkbox } from "@mui/material";
+import {Checkbox, InputLabel} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import "./CreateGroup.css";
 
 function CreateGroup() {
 
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser, postGroupToDb} = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const { modeStyle, theme, setTheme } = useContext(AuthContext);
+    const {modeStyle, theme, setTheme} = useContext(AuthContext);
 
     const [inputText,
         setInputText] = useState('');
     const [meetId,
         setMeetId] = useState('');
+    const [meetTitle,
+        setMeetTitle] = useState('');
+    const [groupName,
+        setGroupName] = useState('');
     const [meetLink,
         setMeetLink] = useState('');
     const [onSubmit,
         setOnSubmit] = useState(false);
     const [errorMsg,
         setErrorMsg] = useState('');
+    const [members,
+        setMembers] = useState([]);
 
     const data = [
-        {name: "Aditya", id: '1', email: 'aditya2ss283@gmail.com'},
-        {name: 'Anurag', id: '2', email: 'anuragg4@gmail.com'},
-        {name: 'Abhishek', id: '3', email: 'abhishek423@gmail.com'},
-        {name: 'Rohit', id: '4', email: 'rohitrr4@gmail.com'},
-        {name: 'Pranav', id: '5', email: 'pranavmohril343@gmail.com'},
-        {name: 'Atharva', id: '6', email: 'atharvaVeda232@gmail.com'},
+        {
+            email: 'aditya2ss567@gmail.com',
+            name: 'Aditya Solanki',
+            id: 1
+        }, {
+            email: 'anuraggp2001@gmail.com',
+            name: 'Anurag Patil',
+            id: 2
+        }, {
+            email: 'sharma420@gmail.com',
+            name: 'Abhishek Sharma',
+            id: 3
+        }, {
+            email: 'adityanair102001@gmail.com',
+            name: 'Aditya Nair',
+            id: 4
+        }
+        // {name: "Aditya Solanki", id: '1', email: 'aditya2ss567@gmail.com'}, {name:
+        // 'Anurag Patil', id: '2', email: 'anuraggp2001@gmail.com'}, {name: 'Abhishek
+        // Sharma', id: '3', email: 'sharma420@gmail.com'}, {name: 'Aditya Nair', id:
+        // '4', email: 'adityanair102001@gmail.com'}
     ]
     const [options] = useState(data);
 
@@ -42,9 +63,17 @@ function CreateGroup() {
         setInputText(e.target.value);
     };
 
+    const groupNameHandler = (e) => {
+        setGroupName(e.target.value);
+    };
+
+    const meetTitleHandler = (e) => {
+        setMeetTitle(e.target.value);
+    };
+
     const submitMeetHandler = (e) => {
         e.preventDefault();
-        
+
         if (inputText === '') {
             setErrorMsg("Please Enter the Meet Link");
             console.log("Please Enter the Meet Link");
@@ -63,9 +92,27 @@ function CreateGroup() {
     };
 
     const createGroupHandler = () => {
+
         console.log('====================================');
-        console.log('The Group is Created!', meetId);
+        console.log("Meeting Title : ", groupName);
+        console.log("Meeting Members : ", members);
+        console.log('The Group is Created! with id : ', meetId);
         console.log('====================================');
+
+        postGroupToDb(members, meetLink, meetId, groupName);
+    }
+
+    const onSelectCall = (selectedList, selectedItem) => {
+        console.log(selectedItem);
+        setMembers([
+            ...members,
+            selectedItem
+        ]);
+    }
+
+    const onRemoveCall = (selectedList, removedItem) => {
+        console.log(removedItem);
+        setMembers(members.filter((el) => el.id !== removedItem.id));
     }
 
     return (
@@ -75,22 +122,28 @@ function CreateGroup() {
             </div>
             <div className="Page-main">
                 {" "}
-                <div style={{ textAlign: "right" }}>
+                <div style={{
+                    textAlign: "right"
+                }}>
                     {" "}
                     <Checkbox
-                        icon={<DarkModeOutlinedIcon />}
-                        checkedIcon={<DarkModeIcon />}
+                        icon={< DarkModeOutlinedIcon />}
+                        checkedIcon={< DarkModeIcon />}
                         onChange={() => {
-                            theme === "LIGHT" ? setTheme("DARK") : setTheme("LIGHT");
-                        }}
-                        sx={{ margin: "1rem" }}
-                    />
+                        theme === "LIGHT"
+                            ? setTheme("DARK")
+                            : setTheme("LIGHT");
+                    }}
+                        sx={{
+                        margin: "1rem"
+                    }}/>
                 </div>
                 <div className="create">
                     <form onSubmit={submitMeetHandler}>
                         <h2>Creating Meet-Groups</h2>
 
                         <input
+                            required
                             value={inputText}
                             onChange={inputTextHandler}
                             type="text"
@@ -105,21 +158,52 @@ function CreateGroup() {
                         {errorMsg}
                     </div>}
                     {onSubmit && <div className='create-invite'>
-                        Hola! Now Lets Invite Your Friends.
-                        <br />
-                        Your Meet Link : <span style={{fontWeight:"bold"}}>{meetLink}</span>
-                        <Multiselect options={options} displayValue="email"/>
-                        
-                        <Link to={`/user-groups/`} 
+                        Yay! Your Meeting is Ready.
+                        <br/>
+                        <span
+                            style={{
+                            fontWeight: "bold"
+                        }}>{meetLink}</span>
+
+                        <br/>
+                        <br/>
+
+                        <InputLabel>Your Group Name</InputLabel>
+                        <input
+                            required
+                            value={groupName}
+                            onChange={groupNameHandler}
+                            type="text"
+                            placeholder="Set Group Name..."
+                            className="meet-input"/>
+                        <br/>
+                        <InputLabel>Meeting Title</InputLabel>
+                        <input
+                            required
+                            value={meetTitle}
+                            onChange={meetTitleHandler}
+                            type="text"
+                            placeholder="Set Meet Title..."
+                            className="meet-input"/>
+                        <br/>
+                        <InputLabel>Select Members</InputLabel>
+                        <Multiselect
+                            options={options}
+                            displayValue="email"
+                            onSelect={onSelectCall}
+                            onRemove={onRemoveCall}/>
+
+                        <Link
+                            to={`/user-groups/`}
                             onClick={createGroupHandler}
                             style={{
                             color: "var(--primary-color)",
                             border: "1px solid var(--primary-color)",
-                            borderRadius: "8px",
+                            borderRadius: "8px"
                         }}>
                             <button>
                                 Create Group
-                            </button>        
+                            </button>
                         </Link>
                     </div>}
                 </div>
