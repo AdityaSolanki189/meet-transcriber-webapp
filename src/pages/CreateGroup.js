@@ -99,7 +99,7 @@ function CreateGroup() {
         console.log('The Group is Created! with id : ', meetId);
         console.log('====================================');
 
-        postGroupToDb(members, meetLink, meetId, groupName);
+        postGroupToDb(members, meetLink, meetId, groupName, meetTitle);
     }
 
     const onSelectCall = (selectedList, selectedItem) => {
