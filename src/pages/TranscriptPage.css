@@ -74,5 +74,11 @@
 }
 #play-n-pause{
     position: absolute;
-    right: 20px;
+    right: 1vw;
+}
+
+#stop{
+    position: absolute;
+    right: 1vw;
+    top:25vh
 }

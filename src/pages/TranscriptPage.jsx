@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import SideMenu from '../components/SideMenu';
 import './TranscriptPage.css';
 
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthProvider";
-import { Checkbox } from "@mui/material";
+import {useContext, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../contexts/AuthProvider";
+import {Checkbox} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Fab from '@mui/material/Fab';
@@ -16,65 +16,202 @@ import editLogo from '../resources/edit.png';
 import calendar from '../resources/calendar-logo.png';
 import clock from '../resources/clock-logo.png';
 import Transcript from '../components/Transcript';
+import {db} from '../config/Firebase';
+import {collection, addDoc, setDoc} from "@firebase/firestore";
+import {doc, getDoc} from "firebase/firestore";
+import {useParams} from 'react-router-dom';
+import {query, where, onSnapshot, orderBy, limit} from "firebase/firestore";
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = new SpeechRecognition();
+
+mic.continuous = true;
+// mic.interimResults = true;
+mic.lang = "en-US";
 
 export default function TranscriptPage() {
 
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
     const navigate = useNavigate();
-    const { modeStyle, theme, setTheme } = useContext(AuthContext);
+    const {modeStyle, theme, setTheme} = useContext(AuthContext);
 
+    const {meetingID, groupID} = useParams();
+
+    console.log(meetingID, groupID)
 
     const timestamp = 'Mon, 10/25 - 11:08 AM'
     const meetLength = '2.01';
     const speakersList = ['Anurag Patil', 'Aditya Solanki', 'Aditya Nair'];
     var html = '';
     for (var i = 0; i < speakersList.length; i++) {
-        if(i !== speakersList.length - 1)
+        if (i !== speakersList.length - 1) 
             html += speakersList[i] + ', ';
-        else
+        else 
             html += speakersList[i];
+        }
+    
+    const [listen,
+        setListen] = useState(false);
+
+    const [transcripts,
+        setTranscripts] = useState([
+        {
+            timestamp: ""
+        }
+    ]);
+
+    async function postTranscriptToDb(text, speaker, timeStamp) {
+        try {
+            const docRef = await setDoc(doc(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript", timeStamp), {
+                text: text,
+                speaker: speaker,
+                timeStamp: timeStamp
+            });
+            console.log(docRef.data());
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const [PlaynPause, setPlay] = useState(true);
+    useEffect(() => {
 
+        const handleListen = () => {
+            if (listen) {
+                setListen(true);
+                mic.start();
+                mic.onspeechend = () => {
+                    console.log("Continue...");
+                    try {
+                        mic.start();
+                    } catch (e) {
+                        console.log(e);
+                    }
+                };
+            } else {
+                mic.stop();
+                setListen(false);
+                mic.onend = () => {
+                    console.log("Stopped on Click");
+                };
+            }
+
+            mic.onstart = () => {
+                console.log("Mics ON!");
+            };
+
+            mic.onresult = (event) => {
+                console.log("result incoming")
+
+                const transcriptArray = Array
+                    .from(event.results)
+                    .map((result) => result[0])
+                    .map((result) => result.transcript)
+
+                console.log(transcriptArray[transcriptArray.length - 1]);
+
+                postTranscriptToDb(transcriptArray[transcriptArray.length - 1], localStorage.getItem("userEmail"), new Date().toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: "2-digit",
+                    second: "2-digit"
+                }))
+
+                mic.onerror = (event) => {
+                    console.log(event.error);
+                };
+            };
+        };
+
+        handleListen();
+
+        const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " ", doc.data(), "...hmm")
+
+                if (transcripts[transcripts.length - 1].timeStamp !== doc.data().timeStamp) {
+                    setTranscripts(transcripts => [
+                        ...transcripts, {
+                            text: doc
+                                .data()
+                                .text,
+                            speaker: doc
+                                .data()
+                                .speaker,
+                            timeStamp: doc
+                                .data()
+                                .timeStamp
+                        }
+                    ])
+                }
+
+            });
+
+        });
+
+        return (() => {
+            unsubscribe();
+
+        })
+    }, [listen]);
 
     return (
         <div className="Page-wrapper">
             <div className="Page-nav">
-                <SideMenu />
+                <SideMenu/>
             </div>
             <div className="Page-main">
                 {" "}
-                <div style={{ textAlign: "right" }}>
+                <div style={{
+                    textAlign: "right"
+                }}>
                     {" "}
                     <Checkbox
-                        icon={<DarkModeOutlinedIcon />}
-                        checkedIcon={<DarkModeIcon />}
+                        icon={< DarkModeOutlinedIcon />}
+                        checkedIcon={< DarkModeIcon />}
                         onChange={() => {
-                            theme === "LIGHT" ? setTheme("DARK") : setTheme("LIGHT");
-                        }}
-                        sx={{ margin: "1rem" }}
-                    />
+                        theme === "LIGHT"
+                            ? setTheme("DARK")
+                            : setTheme("LIGHT");
+                    }}
+                        sx={{
+                        margin: "1rem"
+                    }}/>
                 </div>
                 <div className="header">
                     <div className="heading">
                         <div id="meet-name">
-                            <p>Google Meet - Mon,  Oct 25,  2021 at 11:08 am</p>
+                            <p>Google Meet - Mon, Oct 25, 2021 at 11:08 am</p>
                         </div>
                         <div id="edit-image">
-                            <img src={editLogo} />
+                            <img src={editLogo}/>
                         </div>
-                        <Fab color="primary" id="play-n-pause" onClick={()=> {
-                            PlaynPause?setPlay(false):setPlay(true);
+                        <Fab
+                            color="primary"
+                            id="play-n-pause"
+                            onClick={() => {
+                            setListen(listen => !listen)
                         }}>
-                            {PlaynPause?<PlayArrowIcon/>:<StopIcon/>}
+                            {listen
+                                ? <PauseIcon/>
+                                : <PlayArrowIcon/>}
                         </Fab>
-                        
+
+                        <Fab
+                            color="alert"
+                            id="stop"
+                            onClick={() => {
+                            setListen(false)
+                        }}>
+                            <StopIcon></StopIcon>
+                        </Fab>
+
                     </div>
                     <div className="date-n-time">
-                        <img src={calendar} />
+                        <img src={calendar}/>
                         <p>{timestamp}</p>
-                        <img src={clock} />
+                        <img src={clock}/>
                         <p>{meetLength}</p>
                     </div>
                     <p id="speaker">SPEAKERS</p>
@@ -82,8 +219,25 @@ export default function TranscriptPage() {
                         <p>{html}</p>
                     </div>
                 </div>
+
                 <div className="recycler-view">
-                    <Transcript/>
+
+                    {console.log(transcripts)}
+
+                    {transcripts
+                        ? (transcripts.map((transcript) => {
+                            return (
+                                <Transcript
+                                    name={transcript.speaker}
+                                    timeStamp={transcript.timeStamp}
+                                    text={transcript.text}></Transcript>
+                            )
+                        }))
+                        : (
+                            <div>No transcript yet</div>
+                        )
+}
+
                 </div>
 
             </div>
