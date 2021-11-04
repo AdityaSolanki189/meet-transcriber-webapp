@@ -152,7 +152,7 @@ export default function AuthContextProvider({children}) {
             const response = await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem("userEmail", response.user.email);
             navigate("/home");
-            console.log(response);
+            console.log(response.user);
         } catch (err) {
             console.log(err);
             setError(err.message);
