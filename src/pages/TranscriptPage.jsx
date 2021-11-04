@@ -16,6 +16,7 @@ import editLogo from '../resources/edit.png';
 import calendar from '../resources/calendar-logo.png';
 import clock from '../resources/clock-logo.png';
 import Transcript from '../components/Transcript';
+import TranscriptCard from '../components/TranscriptCard';
 
 export default function TranscriptPage() {
 
@@ -27,15 +28,18 @@ export default function TranscriptPage() {
     const timestamp = 'Mon, 10/25 - 11:08 AM'
     const meetLength = '2.01';
     const speakersList = ['Anurag Patil', 'Aditya Solanki', 'Aditya Nair'];
+    const meetingTitle = "Google Meet - Mon,  Oct 25,  2021 at 11:08 am";
     var html = '';
     for (var i = 0; i < speakersList.length; i++) {
-        if(i !== speakersList.length - 1)
+        if (i !== speakersList.length - 1)
             html += speakersList[i] + ', ';
         else
             html += speakersList[i];
     }
 
     const [PlaynPause, setPlay] = useState(true);
+    const [TitleBox, setBox] = useState(false);
+    const [meetTitle, setTitle] = useState(meetingTitle);
 
 
     return (
@@ -58,18 +62,27 @@ export default function TranscriptPage() {
                 </div>
                 <div className="header">
                     <div className="heading">
-                        <div id="meet-name">
-                            <p>Google Meet - Mon,  Oct 25,  2021 at 11:08 am</p>
+                        <div id="meet-name" onClick={() => {
+                            setBox(true);
+                        }}>
+                            {
+                                TitleBox ?
+                                    <div className="edit-title">
+                                        <input type="text" onChange={event => setTitle(event.target.value)} />
+                                    </div> 
+                                    : <p>{meetTitle}</p>
+                                
+                            }
                         </div>
                         <div id="edit-image">
                             <img src={editLogo} />
                         </div>
-                        <Fab color="primary" id="play-n-pause" onClick={()=> {
-                            PlaynPause?setPlay(false):setPlay(true);
+                        <Fab color="primary" id="play-n-pause" onClick={() => {
+                            PlaynPause ? setPlay(false) : setPlay(true);
                         }}>
-                            {PlaynPause?<PlayArrowIcon/>:<StopIcon/>}
+                            {PlaynPause ? <PlayArrowIcon /> : <StopIcon />}
                         </Fab>
-                        
+
                     </div>
                     <div className="date-n-time">
                         <img src={calendar} />
@@ -82,10 +95,13 @@ export default function TranscriptPage() {
                         <p>{html}</p>
                     </div>
                 </div>
-                <div className="recycler-view">
-                    <Transcript/>
-                </div>
 
+                <div className="recycler-view">
+                    <Transcript />
+                </div>
+                <div className="card-view">
+                    <TranscriptCard />
+                </div>
             </div>
         </div>
     )
