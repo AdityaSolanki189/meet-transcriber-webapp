@@ -23,6 +23,8 @@ function CreateGroup() {
         setMeetId] = useState('');
     const [meetTitle,
         setMeetTitle] = useState('');
+    const [groupName,
+        setGroupName] = useState('');
     const [meetLink,
         setMeetLink] = useState('');
     const [onSubmit,
@@ -35,15 +37,19 @@ function CreateGroup() {
     const data = [
         {
             email: 'aditya2ss567@gmail.com',
+            name: 'Aditya Solanki',
             id: 1
         }, {
             email: 'anuraggp2001@gmail.com',
+            name: 'Anurag Patil',
             id: 2
         }, {
             email: 'sharma420@gmail.com',
+            name: 'Abhishek Sharma',
             id: 3
         }, {
             email: 'adityanair102001@gmail.com',
+            name: 'Aditya Nair',
             id: 4
         }
         // {name: "Aditya Solanki", id: '1', email: 'aditya2ss567@gmail.com'}, {name:
@@ -55,6 +61,10 @@ function CreateGroup() {
 
     const inputTextHandler = (e) => {
         setInputText(e.target.value);
+    };
+
+    const groupNameHandler = (e) => {
+        setGroupName(e.target.value);
     };
 
     const meetTitleHandler = (e) => {
@@ -82,14 +92,14 @@ function CreateGroup() {
     };
 
     const createGroupHandler = () => {
-        
+
         console.log('====================================');
-        console.log("Meeting Title : ", meetTitle);
+        console.log("Meeting Title : ", groupName);
         console.log("Meeting Members : ", members);
         console.log('The Group is Created! with id : ', meetId);
         console.log('====================================');
 
-        postGroupToDb(members, meetLink, meetId, meetTitle );
+        postGroupToDb(members, meetLink, meetId, groupName);
     }
 
     const onSelectCall = (selectedList, selectedItem) => {
@@ -133,6 +143,7 @@ function CreateGroup() {
                         <h2>Creating Meet-Groups</h2>
 
                         <input
+                            required
                             value={inputText}
                             onChange={inputTextHandler}
                             type="text"
@@ -157,12 +168,22 @@ function CreateGroup() {
                         <br/>
                         <br/>
 
+                        <InputLabel>Your Group Name</InputLabel>
+                        <input
+                            required
+                            value={groupName}
+                            onChange={groupNameHandler}
+                            type="text"
+                            placeholder="Set Group Name..."
+                            className="meet-input"/>
+                        <br/>
                         <InputLabel>Meeting Title</InputLabel>
                         <input
+                            required
                             value={meetTitle}
                             onChange={meetTitleHandler}
                             type="text"
-                            placeholder="Set Meeting Title..."
+                            placeholder="Set Meet Title..."
                             className="meet-input"/>
                         <br/>
                         <InputLabel>Select Members</InputLabel>
