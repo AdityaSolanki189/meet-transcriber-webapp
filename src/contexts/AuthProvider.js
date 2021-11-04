@@ -65,30 +65,71 @@ export default function AuthContextProvider({children}) {
             console.log(err)
         }
     }
-    async function updateUserMeetsDB(email, meetLink, meetId, meetTitle) {
+    async function updateUserMeetsDB(email, groupName) {
         
         try {
-            const docRef = await addDoc(collection(db, "/users/" + email + "/mygroups/" + meetId + "/mymeetings/"), {
-                Title: meetTitle,
-                Link : meetLink,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
+            
+            const docRef = await setDoc(doc(db, "/users/" + email + "/mygroups/", groupName), {
+                active: true
+            });
+
             console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
 
     }
-    async function postGroupToDb(members, meetLink, meetId, meetTitle) {
+
+    async function addGroupMembersDB(email, name, groupName){
         try {
-            members.map(user => {
-                updateUserMeetsDB(user.email, meetLink, meetId, meetTitle);
+            
+            const docRef = await setDoc(doc(db, "/groups/" + groupName + "/members/", email), {
+                name: name,
+                email: email
             });
-            console.log("Updated Users Collection!");
+
+            console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
     }
+
+    async function postGroupToDb(members, meetLink, meetId, groupName) {
+        try {
+            //Update each user group
+            const docRef = await setDoc(doc(db, "/groups/" + groupName + "/meetings/", meetId), {
+                name : "speaker",
+                shithespoke: "",
+                link: meetLink
+            });
+            //Update groups collection
+            members.map(user => {
+                updateUserMeetsDB(user.email, groupName);
+                addGroupMembersDB(user.email, user.name, groupName);
+            });
+
+            console.log("Updated Users Collection!", docRef.id);
+        } catch (err) {
+            console.error("Error adding document: ", err);
+        }
+    }
+
+    async function postNewMeetDB(meetLink, meetTitle, groupID, meetId){
+        try {
+            
+            const docRef = await setDoc(doc(db, "/groups/" + groupID + "/meetings/", meetId), {
+                name: "speaker",
+                shithespoke: "",
+                title: meetTitle,
+                link: meetLink
+            });
+
+            console.log("Meet Added with docID", docRef.id);
+        } catch (err) {
+            console.error("Error adding document: ", err);
+        }
+    }
+
     async function signUp(email, password, username) {
         try {
             setError("");
@@ -155,7 +196,8 @@ export default function AuthContextProvider({children}) {
             theme,
             setTheme,
             getUserFromDb,
-            postGroupToDb
+            postGroupToDb,
+            postNewMeetDB
         }}>
             {!loading && children}
         </AuthContext.Provider>
