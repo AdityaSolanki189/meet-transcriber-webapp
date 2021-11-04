@@ -94,13 +94,14 @@ export default function AuthContextProvider({children}) {
         }
     }
 
-    async function postGroupToDb(members, meetLink, meetId, groupName) {
+    async function postGroupToDb(members, meetLink, meetId, groupName, meetTitle) {
         try {
             //Update each user group
             const docRef = await setDoc(doc(db, "/groups/" + groupName + "/meetings/", meetId), {
                 name : "speaker",
                 shithespoke: "",
-                link: meetLink
+                link: meetLink,
+                title: meetTitle
             });
             //Update groups collection
             members.map(user => {
