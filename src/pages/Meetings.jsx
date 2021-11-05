@@ -147,7 +147,8 @@ export default function Meetings() {
 
                 <div className="createMeeting">
                     {addIcon ?
-                        <div className="create">
+                        <div className="create" style={{border: "1px grey solid", padding: "2rem",
+                            boxShadow : "#dccaca 5px 5px 5px", borderRadius: "10px"}}>
                             <form onSubmit={submitMeetHandler}>
                                 <h2>Adding a New Meeting</h2>
 
