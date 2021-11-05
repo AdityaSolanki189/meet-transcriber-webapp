@@ -20,8 +20,6 @@ export default function Meetings() {
     const {groupID} = useParams()
     const [meetings,
         setMeetings] = useState([])
-    const [meetId,
-        setMeetId] = useState('');
     const [errorMsg,
         setErrorMsg] = useState('');
     const [addIcon,
@@ -30,22 +28,17 @@ export default function Meetings() {
         setOnSubmit] = useState(false);
     const [inputText,
         setInputText] = useState("");
-    const [meetLink,
-        setMeetLink] = useState("");
     const [meetTitle,
         setMeetTitle] = useState("");
 
     async function getMeetings(groupID) {
         try {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings"));
-
             docsSnapShot.forEach(doc => {
-
                 setMeetings(meetings => [
                     ...meetings,
                     doc.data().title
                 ])
-
             });
         } catch (err) {
             console.log(err)
