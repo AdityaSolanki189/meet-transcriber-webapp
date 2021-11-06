@@ -1,22 +1,25 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/Firebase";
+import { auth, db } from "../config/Firebase";
 import { colours } from "../theme/colors";
 import logo from "../resources/logo.png";
 import userlogo from "../resources/user-logo.png";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import Home from "@mui/icons-material/Home";
+import {doc, getDoc} from "firebase/firestore";
 import "./SideMenu.css"
 
 function SideMenu() {
 
-    const {currentUser} = useContext(AuthContext);
+    const {currentUser, getUserFromDb} = useContext(AuthContext);
     const navigate = useNavigate();
     
     const { modeStyle} = useContext(AuthContext);
+
+    const [userName, setUserName] = useState("");
 
     async function logout() {
         try {
@@ -27,6 +30,28 @@ function SideMenu() {
             console.log(err);
         }
     } 
+
+    async function getUserInfo(){
+        try {
+
+            const docRef = doc(db, "/users/" + currentUser.email);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                console.log("Document data:", docSnap.data().name);
+                setUserName(docSnap.data().name);
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        getUserInfo();
+    }, [])
 
     return (
         <div className="side-menu" style={{ backgroundColor: modeStyle.backgroundColor }}>
@@ -96,15 +121,15 @@ function SideMenu() {
                 <div className="about-user">
                     <img src={userlogo} alt="sq" width="40px" height="40px"/>
                     <div className="user-info">
-                        <h3>Aditya Solanki</h3>
+                        <h3>{userName}</h3>
                         <h3>{currentUser.email}</h3>
                     </div>
                 </div>
                 
                 <div className="user-btns">
                         <Link to="/edit-profile"> 
-                            <button style={{ color: colours.blue, backgroundColor: modeStyle.backgroundColor, border:"none"}}>
-                            <h3>Edit Profile</h3>
+                            <button style={{ color: colours.blue, backgroundColor: modeStyle.backgroundColor, border:"none"}} onClick={getUserFromDb}>
+                                <h3>Edit Profile</h3>
                             </button>
                         </Link>
                         {/* <button>

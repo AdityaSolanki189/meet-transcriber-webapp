@@ -20,8 +20,6 @@ export default function Meetings() {
     const {groupID} = useParams()
     const [meetings,
         setMeetings] = useState([])
-    const [meetId,
-        setMeetId] = useState('');
     const [errorMsg,
         setErrorMsg] = useState('');
     const [addIcon,
@@ -30,22 +28,17 @@ export default function Meetings() {
         setOnSubmit] = useState(false);
     const [inputText,
         setInputText] = useState("");
-    const [meetLink,
-        setMeetLink] = useState("");
     const [meetTitle,
         setMeetTitle] = useState("");
 
     async function getMeetings(groupID) {
         try {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings"));
-
             docsSnapShot.forEach(doc => {
-
                 setMeetings(meetings => [
                     ...meetings,
                     doc.data().title
                 ])
-
             });
         } catch (err) {
             console.log(err)
@@ -147,7 +140,8 @@ export default function Meetings() {
 
                 <div className="createMeeting">
                     {addIcon ?
-                        <div className="create">
+                        <div className="create" style={{border: "1px grey solid", padding: "2rem",
+                            boxShadow : "#dccaca 5px 5px 5px", borderRadius: "10px"}}>
                             <form onSubmit={submitMeetHandler}>
                                 <h2>Adding a New Meeting</h2>
 
