@@ -4,7 +4,7 @@ import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 import firebase from "@firebase/app-compat";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,updateProfile } from "firebase/auth";
 import {useNavigate} from "react-router-dom";
 import {colours} from "../theme/colors";
 
@@ -136,6 +136,9 @@ export default function AuthContextProvider({children}) {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
+            console.log(response,"at signup")
+            
+            const setDisplayName=await updateProfile(auth.currentUser,{displayName:username});
             postUserToDb(email, response.user.uid, username);
             navigate("/login");
         } catch (err) {
