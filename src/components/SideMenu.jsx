@@ -121,7 +121,9 @@ function SideMenu() {
                 <div className="about-user">
                     <img src={userlogo} alt="sq" width="40px" height="40px"/>
                     <div className="user-info">
-                        <h3>{userName}</h3>
+
+                        <h3>{currentUser.displayName}</h3>
+
                         <h3>{currentUser.email}</h3>
                     </div>
                 </div>
