@@ -19,9 +19,9 @@ export default function Meetings() {
     const {modeStyle, theme, setTheme} = useContext(AuthContext);
     const {groupID} = useParams()
     const [meetings,
-        setMeetings] = useState([])
-    const [meetId,
-        setMeetId] = useState('');
+
+        setMeetings] = useState({})
+
     const [errorMsg,
         setErrorMsg] = useState('');
     const [addIcon,
@@ -30,23 +30,25 @@ export default function Meetings() {
         setOnSubmit] = useState(false);
     const [inputText,
         setInputText] = useState("");
-    const [meetLink,
-        setMeetLink] = useState("");
     const [meetTitle,
         setMeetTitle] = useState("");
 
     async function getMeetings(groupID) {
         try {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings"));
-
             docsSnapShot.forEach(doc => {
 
-                setMeetings(meetings => [
-                    ...meetings,
-                    doc.data().title
-                ])
+           
+               const meeting={};
+               meeting[doc.id]=doc.data().title;
 
-            });
+                setMeetings(meetings => ({
+                    ...meetings, ...meeting}))
+                
+                });
+
+
+
         } catch (err) {
             console.log(err)
         }
@@ -87,6 +89,8 @@ export default function Meetings() {
         setMeetTitle(e.target.value);
     };
 
+    console.log(meetings)
+
     return (
         <div className="Page-wrapper">
             <div className="Page-nav">
@@ -112,10 +116,11 @@ export default function Meetings() {
                 </div>
                 <h1>Your Meetings</h1>
 
-                {meetings.length > 0
-                    ? meetings.map(meeting => {
+            {
+                Object.keys(meetings).length > 0
+                    ? Object.keys(meetings).map(meetingID => {
                         return <Link
-                            to={`/user-groups/${groupID}/${meeting}`}
+                            to={`/user-groups/${groupID}/${meetingID}`}
                             style={{
                             textDecoration: "none",
                             color: "black"
@@ -129,11 +134,13 @@ export default function Meetings() {
                                 width: "50%",
                                 boxShadow: "#dccaca 5px 5px 5px",
                                 borderRadius: "10px"
-                            }}>{meeting}</h2>
+                            }}>{meetings[meetingID]}</h2>
                         </Link>
                     })
                     : <div>Loading Meetings..</div>
-}
+
+
+            }
                 <Fab
                     color="primary"
                     id="add-group"
@@ -147,7 +154,8 @@ export default function Meetings() {
 
                 <div className="createMeeting">
                     {addIcon ?
-                        <div className="create">
+                        <div className="create" style={{border: "1px grey solid", padding: "2rem",
+                            boxShadow : "#dccaca 5px 5px 5px", borderRadius: "10px"}}>
                             <form onSubmit={submitMeetHandler}>
                                 <h2>Adding a New Meeting</h2>
 

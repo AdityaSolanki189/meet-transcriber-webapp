@@ -64,6 +64,10 @@ export default function TranscriptPage() {
     const [meetTitle, setBox] = useState(meetingTitle);
     const [TitleBox, setTitle] = useState(false);
 
+   
+
+    console.log(currentUser,"63")
+
     async function postTranscriptToDb(text, speaker, timeStamp) {
         try {
             const docRef = await setDoc(doc(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript", timeStamp), {
@@ -113,7 +117,7 @@ export default function TranscriptPage() {
 
                 console.log(transcriptArray[transcriptArray.length - 1]);
 
-                postTranscriptToDb(transcriptArray[transcriptArray.length - 1], localStorage.getItem("userEmail"), new Date().toLocaleTimeString([], {
+                postTranscriptToDb(transcriptArray[transcriptArray.length - 1], currentUser.displayName, new Date().toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: "2-digit",
                     second: "2-digit"
@@ -128,6 +132,9 @@ export default function TranscriptPage() {
         handleListen();
 
         const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
+
+
+
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
 
