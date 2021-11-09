@@ -74,15 +74,11 @@
 }
 #play-n-pause{
     position: absolute;
-    position: fixed;
-    right: 20px;
+    right: 1vw;
 }
-.edit-title input{
-    font-size: 40px;
-    font-weight: 550;
-    padding: 5px 10px;
-    margin-right: 10px;
-    text-align: left;
-    border: 1px solid gray;
-    border-radius: 10px;
+
+#stop{
+    position: absolute;
+    right: 1vw;
+    top:25vh
 }
