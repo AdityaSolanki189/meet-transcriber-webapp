@@ -4,7 +4,7 @@ import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 import firebase from "@firebase/app-compat";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
 import {colours} from "../theme/colors";
 
@@ -66,29 +66,31 @@ export default function AuthContextProvider({children}) {
         }
     }
     async function updateUserMeetsDB(email, groupName) {
-        
-        try {
-            
-            const docRef = await setDoc(doc(db, "/users/" + email + "/mygroups/", groupName), {
-                active: true
-            });
 
-            console.log("user added with docID", docRef.id);
+        try {
+
+            const docRef = await setDoc(doc(db, "/users/" + email + "/mygroups/", groupName), {active: true});
+
+            console.log(docRef)
+
+            // console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
 
     }
 
-    async function addGroupMembersDB(email, name, groupName){
+    async function addGroupMembersDB(email, name, groupName) {
         try {
-            
+
             const docRef = await setDoc(doc(db, "/groups/" + groupName + "/members/", email), {
                 name: name,
                 email: email
             });
 
-            console.log("user added with docID", docRef.id);
+            navigate('/user-groups/')
+
+            // console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
@@ -98,7 +100,7 @@ export default function AuthContextProvider({children}) {
         try {
             //Update each user group
             const docRef = await setDoc(doc(db, "/groups/" + groupName + "/meetings/", meetId), {
-                name : "speaker",
+                name: "speaker",
                 shithespoke: "",
                 link: meetLink,
                 title: meetTitle
@@ -109,15 +111,15 @@ export default function AuthContextProvider({children}) {
                 addGroupMembersDB(user.email, user.name, groupName);
             });
 
-            console.log("Updated Users Collection!", docRef.id);
+            // console.log("Updated Users Collection!", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
     }
 
-    async function postNewMeetDB(meetLink, meetTitle, groupID, meetId){
+    async function postNewMeetDB(meetLink, meetTitle, groupID, meetId) {
         try {
-            
+
             const docRef = await setDoc(doc(db, "/groups/" + groupID + "/meetings/", meetId), {
                 name: "speaker",
                 shithespoke: "",
@@ -136,9 +138,7 @@ export default function AuthContextProvider({children}) {
             setError("");
             setLoading(true);
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(response,"at signup")
-            
-            const setDisplayName=await updateProfile(auth.currentUser,{displayName:username});
+            const setDisplayName = await updateProfile(auth.currentUser, {displayName: username});
             postUserToDb(email, response.user.uid, username);
             navigate("/login");
         } catch (err) {

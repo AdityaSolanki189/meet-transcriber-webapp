@@ -193,18 +193,18 @@ function CreateGroup() {
                             onSelect={onSelectCall}
                             onRemove={onRemoveCall}/>
 
-                        <Link
-                            to={`/user-groups/`}
-                            onClick={createGroupHandler}
-                            style={{
-                            color: "var(--primary-color)",
+
+
+                        <button style={{
+                            backgroundColor: "var(--primary-color)",
+                            color:"white",
                             border: "1px solid var(--primary-color)",
-                            borderRadius: "8px"
-                        }}>
-                            <button>
-                                Create Group
-                            </button>
-                        </Link>
+                            borderRadius: "8px"}} 
+                            onClick={()=>{createGroupHandler()}}>
+                                 Create Group
+                        </button>
+
+
                     </div>}
                 </div>
             </div>

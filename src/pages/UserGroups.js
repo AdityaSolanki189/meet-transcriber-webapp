@@ -6,7 +6,7 @@ import {Checkbox} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import SideMenu from '../components/SideMenu'
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import {auth, onAuthStateChanged, db} from "../config/Firebase";
 import {doc, getDoc} from "firebase/firestore";
 import {collection, getDocs} from "firebase/firestore";
@@ -77,19 +77,27 @@ export default function UserGroups() {
                 {myGroups.length > 0
                     ? myGroups.map(group => {
                         console.log(group, "at 75")
-                        return <Link to={`/user-groups/${group}`} style={{textDecoration:"none",color:"black"}}>
-                        <h2
+                        return <Link
+                            to={`/user-groups/${group}`}
                             style={{
-                            margin: "1rem auto",
-                            cursor: "pointer",
-                            border: "1px grey solid",
-                            padding: "1rem",
-                            width: "50%",
-                            boxShadow:"#dccaca 5px 5px 5px",
-                            borderRadius:"10px"
-                        }}>{group}</h2></Link>
+                            textDecoration: "none",
+                            color: "black"
+                        }}>
+                            <h2
+                                style={{
+                                margin: "1rem auto",
+                                cursor: "pointer",
+                                border: "1px grey solid",
+                                padding: "1rem",
+                                width: "50%",
+                                boxShadow: "#dccaca 5px 5px 5px",
+                                borderRadius: "10px"
+                            }}>{group}</h2>
+                        </Link>
                     })
-                    : <div>Loading groups..</div>
+                    : myGroups.length === 0
+                        ? <h2 style={{position:"fixed",top:"50%",left:"50%"}}>There are no groups yet :(</h2>
+                        : <div>Loading groups..</div>
 }
 
             </div>
