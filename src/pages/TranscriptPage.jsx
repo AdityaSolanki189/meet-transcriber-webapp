@@ -17,7 +17,7 @@ import calendar from '../resources/calendar-logo.png';
 import clock from '../resources/clock-logo.png';
 import Transcript from '../components/Transcript';
 import {db} from '../config/Firebase';
-import {collection, addDoc, setDoc} from "@firebase/firestore";
+import {collection, addDoc, setDoc,getDocs} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 import {useParams} from 'react-router-dom';
 import {
@@ -108,93 +108,148 @@ export default function TranscriptPage() {
         }
     }
 
+    async function getActiveStatusOnLoad() {
+        try {
+            const meetref = await getDoc(doc(db, "groups/" + groupID + "/meetings/", meetingID));
+            return meetref
+                .data()
+                .isActive;
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function getAllTranscripts(){
+        try{
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/"+meetingID+"/transcript/"));
+            docsSnapShot.forEach(doc => {
+
+                console.log(doc.data())
+
+                setTranscripts(transcripts => [
+                    ...transcripts, {
+                        text: doc
+                            .data()
+                            .text,
+                        speaker: doc
+                            .data()
+                            .speaker,
+                        timeStamp: doc
+                            .data()
+                            .timeStamp
+                    }
+                ])
+
+            });
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
 
         // (async ()=>{     try{         const activeState=await getDocs(collection(db,
         // "/users/" + currentUser.email + "/mygroups/"+groupID+));     }catch(err){
         // console.log(err)     } })()
 
-        getAdminStatus()
+        (async() => {
 
-        const handleListen = () => {
-            if (listen) {
-                setListen(true);
-                mic.start();
-                mic.onspeechend = () => {
-                    console.log("Continue...");
-                    try {
+            try {
+                await getAdminStatus();
+
+
+                const handleListen = () => {
+                    if (listen) {
+                        setListen(true);
                         mic.start();
-                    } catch (e) {
-                        console.log(e);
+                        mic.onspeechend = () => {
+                            console.log("Continue...");
+                            try {
+                                mic.start();
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        };
+                    } else {
+                        mic.stop();
+                        setListen(false);
+                        mic.onend = () => {
+                            console.log("Stopped on Click");
+                        };
                     }
+        
+                    mic.onstart = () => {
+                        console.log("Mics ON!");
+                    };
+        
+                    mic.onresult = (event) => {
+                        console.log("result incoming")
+        
+                        const transcriptArray = Array
+                            .from(event.results)
+                            .map((result) => result[0])
+                            .map((result) => result.transcript)
+        
+                        console.log(transcriptArray[transcriptArray.length - 1]);
+        
+                        postTranscriptToDb(transcriptArray[transcriptArray.length - 1], currentUser.displayName, new Date().toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: "2-digit",
+                            second: "2-digit"
+                        }))
+        
+                        mic.onerror = (event) => {
+                            console.log(event.error);
+                        };
+                    };
                 };
-            } else {
-                mic.stop();
-                setListen(false);
-                mic.onend = () => {
-                    console.log("Stopped on Click");
-                };
-            }
-
-            mic.onstart = () => {
-                console.log("Mics ON!");
-            };
-
-            mic.onresult = (event) => {
-                console.log("result incoming")
-
-                const transcriptArray = Array
-                    .from(event.results)
-                    .map((result) => result[0])
-                    .map((result) => result.transcript)
-
-                console.log(transcriptArray[transcriptArray.length - 1]);
-
-                postTranscriptToDb(transcriptArray[transcriptArray.length - 1], currentUser.displayName, new Date().toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: "2-digit",
-                    second: "2-digit"
-                }))
-
-                mic.onerror = (event) => {
-                    console.log(event.error);
-                };
-            };
-        };
-
-        handleListen();
-
-        const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
-
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-
-            querySnapshot.forEach((doc) => {
-                console.log(doc.id, " ", doc.data(), "...hmm")
-
-                if (transcripts[transcripts.length - 1].timeStamp !== doc.data().timeStamp) {
-                    setTranscripts(transcripts => [
-                        ...transcripts, {
-                            text: doc
-                                .data()
-                                .text,
-                            speaker: doc
-                                .data()
-                                .speaker,
-                            timeStamp: doc
-                                .data()
-                                .timeStamp
-                        }
-                    ])
+        
+                if (await getActiveStatusOnLoad() === true) {
+                    handleListen();
+                    setDisablePlay(false)
+                    const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
+        
+                    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        
+                        querySnapshot.forEach((doc) => {
+                            console.log(doc.id, " ", doc.data(), "...hmm")
+        
+                            if (transcripts[transcripts.length - 1].timeStamp !== doc.data().timeStamp) {
+                                setTranscripts(transcripts => [
+                                    ...transcripts, {
+                                        text: doc
+                                            .data()
+                                            .text,
+                                        speaker: doc
+                                            .data()
+                                            .speaker,
+                                        timeStamp: doc
+                                            .data()
+                                            .timeStamp
+                                    }
+                                ])
+                            }
+        
+                        });
+        
+                    });
+        
+                    return (() => {
+                        unsubscribe();
+        
+                    })
+                } else {
+                    console.log("saved hai bhai, no rendering")
+                    setDisablePlay(true)
+                    await getAllTranscripts();
                 }
+            } catch (err) {
+                console.log(err)
+            }
+        })()
 
-            });
 
-        });
 
-        return (() => {
-            unsubscribe();
-
-        })
     }, [listen]);
 
     return (
@@ -247,7 +302,7 @@ export default function TranscriptPage() {
                                     color="alert"
                                     id="stop"
                                     onClick={() => {
-                                    setActiveStatus()
+                                    setActiveStatus();
                                     setDisablePlay(true)
                                 }}>
                                     <StopIcon></StopIcon>
