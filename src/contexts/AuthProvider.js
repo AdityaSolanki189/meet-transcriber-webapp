@@ -116,6 +116,7 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
+    
 
     async function postNewMeetDB(meetLink, meetTitle, groupID, meetId) {
         try {
