@@ -65,10 +65,9 @@ export default function AuthContextProvider({children}) {
         }
     }
     async function updateUserMeetsDB(email, groupName) {
-
         try {
 
-            const docRef = await setDoc(doc(db, "/users/" + email + "/mygroups/", groupName), {active: true});
+            const docRef = await setDoc(doc(db, "/users/" + email + "/mygroups/", groupName), {groupName: groupName});
 
             console.log(docRef)
 
@@ -79,17 +78,24 @@ export default function AuthContextProvider({children}) {
 
     }
 
-    async function addGroupMembersDB(email, name, groupName) {
+    async function addGroupMembersDB(email, groupName) {
         try {
 
+            const nameRef = await getDoc(doc(db, "users", email));
+
             const docRef = await setDoc(doc(db, "/groups/" + groupName + "/members/", email), {
-                name: name,
-                email: email
+                name: nameRef
+                    .data()
+                    .name,
+                email: email,
+                isAdmin: localStorage.getItem("userEmail") === email
+                    ? true
+                    : false
             });
 
             navigate('/user-groups/')
 
-            // console.log("user added with docID", docRef.id);
+            console.log("user added with docID", docRef.id);
         } catch (err) {
             console.error("Error adding document: ", err);
         }
@@ -102,12 +108,13 @@ export default function AuthContextProvider({children}) {
                 name: "speaker",
                 shithespoke: "",
                 link: meetLink,
-                title: meetTitle
+                title: meetTitle,
+                isActive: true
             });
             //Update groups collection
             members.map(user => {
-                updateUserMeetsDB(user.email, groupName);
-                addGroupMembersDB(user.email, user.name, groupName);
+                updateUserMeetsDB(user, groupName);
+                addGroupMembersDB(user, groupName);
             });
 
             // console.log("Updated Users Collection!", docRef.id);
@@ -115,7 +122,6 @@ export default function AuthContextProvider({children}) {
             console.error("Error adding document: ", err);
         }
     }
-    
 
     async function postNewMeetDB(meetLink, meetTitle, groupID, meetId) {
         try {

@@ -20,7 +20,14 @@ import {db} from '../config/Firebase';
 import {collection, addDoc, setDoc} from "@firebase/firestore";
 import {doc, getDoc} from "firebase/firestore";
 import {useParams} from 'react-router-dom';
-import {query, where, onSnapshot, orderBy, limit} from "firebase/firestore";
+import {
+    query,
+    where,
+    onSnapshot,
+    orderBy,
+    limit,
+    updateDoc
+} from "firebase/firestore";
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const mic = new SpeechRecognition();
@@ -62,9 +69,13 @@ export default function TranscriptPage() {
         }
     ]);
 
-    
+    const [isAdmin,
+        setIsAdmin] = useState(null);
 
-    console.log(currentUser,"63")
+    const [disablePlay,
+        setDisablePlay] = useState(false);
+
+    console.log(currentUser, "63")
 
     async function postTranscriptToDb(text, speaker, timeStamp) {
         try {
@@ -79,15 +90,31 @@ export default function TranscriptPage() {
         }
     }
 
+    async function getAdminStatus() {
+        try {
+            const memberRef = await getDoc(doc(db, "groups/" + groupID + "/members", localStorage.getItem("userEmail")));
+            setIsAdmin(memberRef.data().isAdmin)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function setActiveStatus() {
+        try {
+            const response = await updateDoc(doc(db, "groups/" + groupID + "/meetings/", meetingID), {isActive: false});
+            console.log(response, "at 102 active status")
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
 
-        // (async ()=>{
-        //     try{
-        //         const activeState=await getDocs(collection(db, "/users/" + currentUser.email + "/mygroups/"+groupID+));
-        //     }catch(err){
-        //         console.log(err)
-        //     }
-        // })()
+        // (async ()=>{     try{         const activeState=await getDocs(collection(db,
+        // "/users/" + currentUser.email + "/mygroups/"+groupID+));     }catch(err){
+        // console.log(err)     } })()
+
+        getAdminStatus()
 
         const handleListen = () => {
             if (listen) {
@@ -138,9 +165,6 @@ export default function TranscriptPage() {
         handleListen();
 
         const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
-
-
-
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
 
@@ -209,20 +233,27 @@ export default function TranscriptPage() {
                             id="play-n-pause"
                             onClick={() => {
                             setListen(listen => !listen)
-                        }}>
+                        }}
+                            disabled={disablePlay}>
                             {listen
                                 ? <PauseIcon/>
                                 : <PlayArrowIcon/>}
                         </Fab>
 
-                        <Fab
-                            color="alert"
-                            id="stop"
-                            onClick={() => {
-                            setListen(false)
-                        }}>
-                            <StopIcon></StopIcon>
-                        </Fab>
+                        {console.log(isAdmin, "233")}
+
+                        {isAdmin === true
+                            ? <Fab
+                                    color="alert"
+                                    id="stop"
+                                    onClick={() => {
+                                    setActiveStatus()
+                                    setDisablePlay(true)
+                                }}>
+                                    <StopIcon></StopIcon>
+                                </Fab>
+                            : <div></div>
+}
 
                     </div>
                     <div className="date-n-time">
@@ -241,7 +272,7 @@ export default function TranscriptPage() {
 
                     {console.log(transcripts)}
 
-                    {transcripts.length>1
+                    {transcripts.length > 1
                         ? (transcripts.map((transcript) => {
                             return (
                                 <Transcript
