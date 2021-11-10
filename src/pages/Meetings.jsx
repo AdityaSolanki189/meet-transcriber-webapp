@@ -38,16 +38,17 @@ export default function Meetings() {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings"));
             docsSnapShot.forEach(doc => {
 
-           
-               const meeting={};
-               meeting[doc.id]=doc.data().title;
+                const meeting = {};
+                meeting[doc.id] = doc
+                    .data()
+                    .title;
 
                 setMeetings(meetings => ({
-                    ...meetings, ...meeting}))
-                
-                });
+                    ...meetings,
+                    ...meeting
+                }))
 
-
+            });
 
         } catch (err) {
             console.log(err)
@@ -116,31 +117,32 @@ export default function Meetings() {
                 </div>
                 <h1>Your Meetings</h1>
 
-            {
-                Object.keys(meetings).length > 0
-                    ? Object.keys(meetings).map(meetingID => {
-                        return <Link
-                            to={`/user-groups/${groupID}/${meetingID}`}
-                            style={{
-                            textDecoration: "none",
-                            color: "black"
-                        }}>
-                            <h2
+                {Object
+                    .keys(meetings)
+                    .length > 0
+                    ? Object
+                        .keys(meetings)
+                        .map(meetingID => {
+                            return <Link
+                                to={`/user-groups/${groupID}/${meetingID}`}
                                 style={{
-                                margin: "1rem auto",
-                                cursor: "pointer",
-                                border: "1px grey solid",
-                                padding: "1rem",
-                                width: "50%",
-                                boxShadow: "#dccaca 5px 5px 5px",
-                                borderRadius: "10px"
-                            }}>{meetings[meetingID]}</h2>
-                        </Link>
-                    })
+                                textDecoration: "none",
+                                color: "black"
+                            }}>
+                                <h2
+                                    style={{
+                                    margin: "1rem auto",
+                                    cursor: "pointer",
+                                    border: "1px grey solid",
+                                    padding: "1rem",
+                                    width: "50%",
+                                    boxShadow: "#dccaca 5px 5px 5px",
+                                    borderRadius: "10px"
+                                }}>{meetings[meetingID]}</h2>
+                            </Link>
+                        })
                     : <div>Loading Meetings..</div>
-
-
-            }
+}
                 <Fab
                     color="primary"
                     id="add-group"
@@ -153,39 +155,43 @@ export default function Meetings() {
                 </Fab>
 
                 <div className="createMeeting">
-                    {addIcon ?
-                        <div className="create" style={{border: "1px grey solid", padding: "2rem",
-                            boxShadow : "#dccaca 5px 5px 5px", borderRadius: "10px"}}>
-                            <form onSubmit={submitMeetHandler}>
-                                <h2>Adding a New Meeting</h2>
+                    {addIcon
+                        ? <div
+                                className="create"
+                                style={{
+                                border: "1px grey solid",
+                                padding: "2rem",
+                                boxShadow: "#dccaca 5px 5px 5px",
+                                borderRadius: "10px"
+                            }}>
+                                <form onSubmit={submitMeetHandler}>
+                                    <h2>Adding a New Meeting</h2>
 
-                                <InputLabel>Meeting Link</InputLabel>
-                                <input
-                                    required
-                                    value={inputText}
-                                    onChange={inputTextHandler}
-                                    type="text"
-                                    placeholder="Enter Meet Link..."
-                                    className="meet-input"/>
+                                    <InputLabel>Meeting Link</InputLabel>
+                                    <input
+                                        required
+                                        value={inputText}
+                                        onChange={inputTextHandler}
+                                        type="text"
+                                        placeholder="Enter Meet Link..."
+                                        className="meet-input"/>
 
-                                <InputLabel>Meeting Title</InputLabel>
-                                <input
-                                    required
-                                    value={meetTitle}
-                                    onChange={meetTitleHandler}
-                                    type="text"
-                                    placeholder="Enter Meet Title..."
-                                    className="meet-input"/>
+                                    <InputLabel>Meeting Title</InputLabel>
+                                    <input
+                                        required
+                                        value={meetTitle}
+                                        onChange={meetTitleHandler}
+                                        type="text"
+                                        placeholder="Enter Meet Title..."
+                                        className="meet-input"/>
 
-                                
-                                <button >
-                                    Create New Meeting
-                                </button>
-                                <br />
-                                {errorMsg}
-                            </form>
-                        </div> : 
-                        <div className="onHide"></div>}
+                                    <button >
+                                        Create New Meeting
+                                    </button>
+                                    <br/> {errorMsg}
+                                </form>
+                            </div>
+                        : <div className="onHide"></div>}
                 </div>
             </div>
         </div>

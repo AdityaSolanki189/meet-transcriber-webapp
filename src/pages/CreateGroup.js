@@ -33,7 +33,7 @@ function CreateGroup() {
     const [errorMsg,
         setErrorMsg] = useState('');
     const [members,
-        setMembers] = useState([]);
+        setMembers] = useState([localStorage.getItem("userEmail")]);
 
     const data = [
         {
@@ -99,7 +99,7 @@ function CreateGroup() {
         console.log("Meeting Members : ", members);
         console.log('The Group is Created! with id : ', meetId);
         console.log('====================================');
-
+        // setMembers(members=>[...members,currentUser.email])
         postGroupToDb(members, meetLink, meetId, groupName, meetTitle);
     }
 
@@ -115,6 +115,7 @@ function CreateGroup() {
         console.log(removedItem);
         setMembers(members.filter((el) => el.id !== removedItem.id));
     }
+
 
     return (
         <div className="Page-wrapper">
@@ -198,10 +199,10 @@ function CreateGroup() {
                        
                         <div style={{margin:"1rem",padding:"1rem",width:"100%"}}>
                         <InputLabel>Select Members</InputLabel>
-                        
+
                         <ChipInput
                             // defaultValue={['foo', 'bar']}
-                            onChange={(chips) => setMembers(chips)}
+                            onChange={(chips) => {setMembers(members=>[...members,chips[chips.length-1]]);console.log(chips)}}
                             fullWidthInput={true}
                             placeholder="Enter email of members"
                             // style={{padding:"1rem"}}
