@@ -31,7 +31,7 @@ export default function UserGroups() {
 
                 setMyGroups(myGroups => [
                     ...myGroups,
-                    doc.id
+                    doc.id 
                 ])
 
             });
@@ -40,6 +40,10 @@ export default function UserGroups() {
             console.log(err)
         }
     }
+
+  
+
+    
 
     useEffect(() => {
         getMyGroups(localStorage.getItem("userEmail"))

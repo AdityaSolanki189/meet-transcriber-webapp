@@ -84,14 +84,16 @@ export default function TranscriptPage() {
 
     const [transcripts,
         setTranscripts] = useState([
-            {
-                timestamp: ""
-            }
-        ]);
+        {
+            text: "Transcript",
+            speaker: "speaker",
+            timeStamp: "00.00"
+        }
+    ]);
+
+    
     const [meetTitle, setBox] = useState(meetingTitle);
     const [TitleBox, setTitle] = useState(false);
-
-   
 
     console.log(currentUser,"63")
 
@@ -119,6 +121,15 @@ export default function TranscriptPage() {
         getSpeakers();
         getMeetingTitle();
         
+
+        // (async ()=>{
+        //     try{
+        //         const activeState=await getDocs(collection(db, "/users/" + currentUser.email + "/mygroups/"+groupID+));
+        //     }catch(err){
+        //         console.log(err)
+        //     }
+        // })()
+
         const handleListen = () => {
             if (listen) {
                 setListen(true);
@@ -280,7 +291,7 @@ export default function TranscriptPage() {
                     <Transcript />
                     {console.log(transcripts)}
 
-                    {transcripts
+                    {transcripts.length>1
                         ? (transcripts.map((transcript) => {
                             return (
                                 <Transcript
