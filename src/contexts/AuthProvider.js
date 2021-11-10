@@ -51,12 +51,11 @@ export default function AuthContextProvider({children}) {
     }
     async function getUserFromDb() {
         try {
-            const docRef = doc(db, "users");
+            const docRef = collection(db, "users");
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
                 console.log("Document data:", docSnap.data());
-                return docSnap.data();
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -178,11 +177,10 @@ export default function AuthContextProvider({children}) {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        return onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             console.log(" at authProvider use Effect", user);
         });
-        return unsubscribe;
     }, []);
 
     return (

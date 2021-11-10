@@ -4,11 +4,6 @@
     width: 50%;
     margin: 1rem auto;
     text-align: center;
-
-    border: 1px grey solid;
-    padding: 2rem;
-    box-shadow: #dccaca 5px 5px 5px;
-    border-radius: 10px;
 }
 
 .create label {
