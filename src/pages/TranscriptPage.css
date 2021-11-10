@@ -7,7 +7,6 @@
 .heading{
     display: flex;
     align-items: center;
-    visibility: visible;
 }
 .heading p{
     border: 1px solid transparent;
@@ -71,6 +70,7 @@
     height: fit-content;
     width: 1000px;
     margin: 15px auto;
+    margin-bottom: 200px;
 }
 #play-n-pause{
     position: absolute;

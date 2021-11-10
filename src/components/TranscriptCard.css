@@ -1,0 +1,32 @@
+.card-view{
+    position: fixed;
+    bottom: 20px;
+    left: 27%;
+    width: 66%;
+    margin: 30px auto;
+    height: 150px;
+    background-color: white;
+    border: 1px solid rgb(172, 172, 172);
+    border-radius: 10px;
+    display: flex;
+    padding: 20px;
+}
+.photu img{
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+}
+.transcriptHolder{
+    width: 100%;
+}
+.name-n-time{
+    /* background-color: bisque; */
+    display: flex;
+    justify-content: space-between;
+}
+.transcript-card-wali-transcript{
+    text-align: left;
+    color: rgb(97, 97, 97);
+    overflow-y: auto;
+    height: 85px;
+}
