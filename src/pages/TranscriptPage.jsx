@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import SideMenu from '../components/SideMenu';
 import './TranscriptPage.css';
 
-import {useContext, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {AuthContext} from "../contexts/AuthProvider";
-import {Checkbox} from "@mui/material";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthProvider";
+import { Checkbox } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Fab from '@mui/material/Fab';
@@ -16,18 +16,12 @@ import editLogo from '../resources/edit.png';
 import calendar from '../resources/calendar-logo.png';
 import clock from '../resources/clock-logo.png';
 import Transcript from '../components/Transcript';
-import {db} from '../config/Firebase';
-import {collection, addDoc, setDoc,getDocs} from "@firebase/firestore";
-import {doc, getDoc} from "firebase/firestore";
-import {useParams} from 'react-router-dom';
-import {
-    query,
-    where,
-    onSnapshot,
-    orderBy,
-    limit,
-    updateDoc
-} from "firebase/firestore";
+import TranscriptCard from '../components/TranscriptCard';
+import { db } from '../config/Firebase';
+import { collection, addDoc, setDoc,updateDoc } from "@firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { useParams } from 'react-router-dom';
+import { query, where, onSnapshot, orderBy, limit , getDocs} from "firebase/firestore";
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const mic = new SpeechRecognition();
@@ -38,25 +32,53 @@ mic.lang = "en-US";
 
 export default function TranscriptPage() {
 
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
-    const {modeStyle, theme, setTheme} = useContext(AuthContext);
+    const { modeStyle, theme, setTheme } = useContext(AuthContext);
 
-    const {meetingID, groupID} = useParams();
+    const { meetingID, groupID } = useParams();
 
     console.log(meetingID, groupID)
 
-    const timestamp = 'Mon, 10/25 - 11:08 AM'
+    const timestamp = 'Monday, 11:08 AM';
     const meetLength = '2.01';
-    const speakersList = ['Anurag Patil', 'Aditya Solanki', 'Aditya Nair'];
-    var html = '';
-    for (var i = 0; i < speakersList.length; i++) {
-        if (i !== speakersList.length - 1) 
-            html += speakersList[i] + ', ';
-        else 
-            html += speakersList[i];
-        }
+    const [speakersList, setSpeakers] = useState(['Loading...']);
     
+    async function getSpeakers(){
+        try{
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/members"));
+
+            console.log(docsSnapShot);
+            setSpeakers([]);
+
+            docsSnapShot.forEach(doc => {
+
+                setSpeakers(speakersList => [
+                    ...speakersList,
+                    doc.data().name
+                ])
+
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
+
+    const [meetingTitle, setMeetingTitle] = useState("Google Meet - Mon,  Oct 25,  2021 at 11:08 am");
+    async function getMeetingTitle(){
+        try{
+            const docSnap = await getDoc(doc(db, "/groups/" + groupID + "/meetings/" + meetingID));
+            console.log(docSnap);
+            setMeetingTitle(docSnap.data().title);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    
+
     const [listen,
         setListen] = useState(false);
 
@@ -74,6 +96,9 @@ export default function TranscriptPage() {
 
     const [disablePlay,
         setDisablePlay] = useState(false);
+    
+    const [meetTitle, setBox] = useState(meetingTitle);
+    const [TitleBox, setTitle] = useState(false);
 
     console.log(currentUser, "63")
 
@@ -98,6 +123,14 @@ export default function TranscriptPage() {
             console.log(err)
         }
     }
+    var html = '';
+    for (var i = 0; i < speakersList.length; i++) {
+        if (i !== speakersList.length - 1) 
+            html += speakersList[i] + ', ';
+        else 
+            html += speakersList[i];
+        }
+  
 
     async function setActiveStatus() {
         try {
@@ -151,6 +184,9 @@ export default function TranscriptPage() {
         // (async ()=>{     try{         const activeState=await getDocs(collection(db,
         // "/users/" + currentUser.email + "/mygroups/"+groupID+));     }catch(err){
         // console.log(err)     } })()
+
+        getSpeakers();
+        getMeetingTitle();
 
         (async() => {
 
@@ -255,7 +291,7 @@ export default function TranscriptPage() {
     return (
         <div className="Page-wrapper">
             <div className="Page-nav">
-                <SideMenu/>
+                <SideMenu />
             </div>
             <div className="Page-main">
                 {" "}
@@ -267,21 +303,30 @@ export default function TranscriptPage() {
                         icon={< DarkModeOutlinedIcon />}
                         checkedIcon={< DarkModeIcon />}
                         onChange={() => {
-                        theme === "LIGHT"
-                            ? setTheme("DARK")
-                            : setTheme("LIGHT");
-                    }}
+                            theme === "LIGHT"
+                                ? setTheme("DARK")
+                                : setTheme("LIGHT");
+                        }}
                         sx={{
-                        margin: "1rem"
-                    }}/>
+                            margin: "1rem"
+                        }} />
                 </div>
                 <div className="header">
                     <div className="heading">
-                        <div id="meet-name">
-                            <p>Google Meet - Mon, Oct 25, 2021 at 11:08 am</p>
+                        <div id="meet-name" onClick={() => {
+                            setBox(true);
+                        }}>
+                            {
+                                TitleBox ?
+                                    <div className="edit-title">
+                                        <input type="text" onChange={event => setTitle(event.target.value)} />
+                                    </div>
+                                    : <p>{ meetingTitle }</p>
+
+                            }
                         </div>
                         <div id="edit-image">
-                            <img src={editLogo}/>
+                            <img src={editLogo} />
                         </div>
                         <Fab
                             color="primary"
@@ -291,8 +336,8 @@ export default function TranscriptPage() {
                         }}
                             disabled={disablePlay}>
                             {listen
-                                ? <PauseIcon/>
-                                : <PlayArrowIcon/>}
+                                ? <PauseIcon />
+                                : <PlayArrowIcon />}
                         </Fab>
 
                         {console.log(isAdmin, "233")}
@@ -312,19 +357,19 @@ export default function TranscriptPage() {
 
                     </div>
                     <div className="date-n-time">
-                        <img src={calendar}/>
+                        <img src={calendar} />
                         <p>{timestamp}</p>
-                        <img src={clock}/>
+                        <img src={clock} />
                         <p>{meetLength}</p>
                     </div>
                     <p id="speaker">SPEAKERS</p>
                     <div className="speakers-list">
-                        <p>{html}</p>
+                        <p>{ html }</p>
                     </div>
                 </div>
 
                 <div className="recycler-view">
-
+                    <Transcript />
                     {console.log(transcripts)}
 
                     {transcripts.length > 1
@@ -334,15 +379,16 @@ export default function TranscriptPage() {
                                     name={transcript.speaker}
                                     timeStamp={transcript.timeStamp}
                                     text={transcript.text}></Transcript>
-                            )
+                            ) 
                         }))
                         : (
                             <div>No transcript yet</div>
                         )
-}
-
+                    }
                 </div>
-
+                {/* <div className="card-view">
+                    <TranscriptCard />
+                </div> */}
             </div>
         </div>
     )
