@@ -8,6 +8,7 @@ import SideMenu from "../components/SideMenu";
 import {Checkbox, InputLabel} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import ChipInput from 'material-ui-chip-input'
 import "./CreateGroup.css";
 
 function CreateGroup() {
@@ -186,24 +187,44 @@ function CreateGroup() {
                             placeholder="Set Meet Title..."
                             className="meet-input"/>
                         <br/>
-                        <InputLabel>Select Members</InputLabel>
-                        <Multiselect
+                        {/* <InputLabel>Select Members</InputLabel> */}
+
+                        {/* <Multiselect
                             options={options}
                             displayValue="email"
                             onSelect={onSelectCall}
-                            onRemove={onRemoveCall}/>
+                            onRemove={onRemoveCall}/> */}
 
+                       
+                        <div style={{margin:"1rem",padding:"1rem",width:"100%"}}>
+                        <InputLabel>Select Members</InputLabel>
+                        
+                        <ChipInput
+                            // defaultValue={['foo', 'bar']}
+                            onChange={(chips) => setMembers(chips)}
+                            fullWidthInput={true}
+                            placeholder="Enter email of members"
+                            // style={{padding:"1rem"}}
+                            InputProps={{
+                                inputProps: { style: { minWidth: '90%',padding:"1rem 0rem",marginRight:"1rem" } },
+                                
+                              }}
+                              variant="outlined"
+                            fullWidth={true}/>
+                        </div>
 
-
-                        <button style={{
+                        <button
+                            style={{
                             backgroundColor: "var(--primary-color)",
-                            color:"white",
+                            color: "white",
                             border: "1px solid var(--primary-color)",
-                            borderRadius: "8px"}} 
-                            onClick={()=>{createGroupHandler()}}>
-                                 Create Group
+                            borderRadius: "8px"
+                        }}
+                            onClick={() => {
+                            createGroupHandler()
+                        }}>
+                            Create Group
                         </button>
-
 
                     </div>}
                 </div>

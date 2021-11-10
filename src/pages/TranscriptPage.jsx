@@ -56,11 +56,13 @@ export default function TranscriptPage() {
     const [transcripts,
         setTranscripts] = useState([
         {
-            timestamp: ""
+            text: "Transcript",
+            speaker: "speaker",
+            timeStamp: "00.00"
         }
     ]);
 
-   
+    
 
     console.log(currentUser,"63")
 
@@ -78,6 +80,14 @@ export default function TranscriptPage() {
     }
 
     useEffect(() => {
+
+        // (async ()=>{
+        //     try{
+        //         const activeState=await getDocs(collection(db, "/users/" + currentUser.email + "/mygroups/"+groupID+));
+        //     }catch(err){
+        //         console.log(err)
+        //     }
+        // })()
 
         const handleListen = () => {
             if (listen) {
@@ -231,7 +241,7 @@ export default function TranscriptPage() {
 
                     {console.log(transcripts)}
 
-                    {transcripts
+                    {transcripts.length>1
                         ? (transcripts.map((transcript) => {
                             return (
                                 <Transcript
