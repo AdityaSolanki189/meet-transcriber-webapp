@@ -188,6 +188,8 @@ export default function TranscriptPage() {
         getSpeakers();
         getMeetingTitle();
 
+        var unsubscribe=()=>{};
+
         (async() => {
 
             try {
@@ -245,7 +247,7 @@ export default function TranscriptPage() {
                     setDisablePlay(false)
                     const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
         
-                    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                     unsubscribe = onSnapshot(q, (querySnapshot) => {
         
                         querySnapshot.forEach((doc) => {
                             console.log(doc.id, " ", doc.data(), "...hmm")
@@ -270,10 +272,10 @@ export default function TranscriptPage() {
         
                     });
         
-                    return (() => {
-                        unsubscribe();
+                    // return (() => {
+                    //     unsubscribe();
         
-                    })
+                    // })
                 } else {
                     console.log("saved hai bhai, no rendering")
                     setDisablePlay(true)
@@ -283,6 +285,11 @@ export default function TranscriptPage() {
                 console.log(err)
             }
         })()
+
+        return (() => {
+            unsubscribe();
+
+        })
 
 
 
