@@ -21,7 +21,7 @@ import { db } from '../config/Firebase';
 import { collection, addDoc, setDoc } from "@firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { useParams } from 'react-router-dom';
-import { query, where, onSnapshot, orderBy, limit } from "firebase/firestore";
+import { query, where, onSnapshot, orderBy, limit , getDocs} from "firebase/firestore";
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const mic = new SpeechRecognition();
@@ -40,17 +40,44 @@ export default function TranscriptPage() {
 
     console.log(meetingID, groupID)
 
-    const timestamp = 'Mon, 10/25 - 11:08 AM';
+    const timestamp = 'Monday, 11:08 AM';
     const meetLength = '2.01';
-    const speakersList = ['Anurag Patil', 'Aditya Solanki', 'Aditya Nair'];
-    const meetingTitle = "Google Meet - Mon,  Oct 25,  2021 at 11:08 am";
-    var html = '';
-    for (var i = 0; i < speakersList.length; i++) {
-        if (i !== speakersList.length - 1)
-            html += speakersList[i] + ', ';
-        else
-            html += speakersList[i];
+    const [speakersList, setSpeakers] = useState(['Loading...']);
+    
+    async function getSpeakers(){
+        try{
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/members"));
+
+            console.log(docsSnapShot);
+            setSpeakers([]);
+
+            docsSnapShot.forEach(doc => {
+
+                setSpeakers(speakersList => [
+                    ...speakersList,
+                    doc.data().name
+                ])
+
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
     }
+
+
+    const [meetingTitle, setMeetingTitle] = useState("Google Meet - Mon,  Oct 25,  2021 at 11:08 am");
+    async function getMeetingTitle(){
+        try{
+            const docSnap = await getDoc(doc(db, "/groups/" + groupID + "/meetings/" + meetingID));
+            console.log(docSnap);
+            setMeetingTitle(docSnap.data().title);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    
 
     const [listen,
         setListen] = useState(false);
@@ -81,8 +108,17 @@ export default function TranscriptPage() {
         }
     }
 
+    var html = '';
+    for (var i = 0; i < speakersList.length; i++) {
+        if (i !== speakersList.length - 1) 
+            html += speakersList[i] + ', ';
+        else 
+            html += speakersList[i];
+        }
     useEffect(() => {
-
+        getSpeakers();
+        getMeetingTitle();
+        
         const handleListen = () => {
             if (listen) {
                 setListen(true);
@@ -200,7 +236,7 @@ export default function TranscriptPage() {
                                     <div className="edit-title">
                                         <input type="text" onChange={event => setTitle(event.target.value)} />
                                     </div>
-                                    : <p>{meetTitle}</p>
+                                    : <p>{ meetingTitle }</p>
 
                             }
                         </div>
@@ -236,7 +272,7 @@ export default function TranscriptPage() {
                     </div>
                     <p id="speaker">SPEAKERS</p>
                     <div className="speakers-list">
-                        <p>{html}</p>
+                        <p>{ html }</p>
                     </div>
                 </div>
 
