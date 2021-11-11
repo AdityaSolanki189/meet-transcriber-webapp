@@ -73,12 +73,12 @@
     margin-bottom: 200px;
 }
 #play-n-pause{
-    position: absolute;
+    position: fixed;
     right: 1vw;
 }
 
 #stop{
-    position: absolute;
+    position: fixed;
     right: 1vw;
     top:25vh
 }
