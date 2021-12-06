@@ -181,9 +181,7 @@ export default function TranscriptPage() {
 
     useEffect(() => {
 
-        // (async ()=>{     try{         const activeState=await getDocs(collection(db,
-        // "/users/" + currentUser.email + "/mygroups/"+groupID+));     }catch(err){
-        // console.log(err)     } })()
+
 
         getSpeakers();
         getMeetingTitle();
@@ -279,7 +277,7 @@ export default function TranscriptPage() {
                 } else {
                     console.log("saved hai bhai, no rendering")
                     setDisablePlay(true)
-                    await getAllTranscripts();
+                     await getAllTranscripts();
                 }
             } catch (err) {
                 console.log(err)
@@ -379,7 +377,8 @@ export default function TranscriptPage() {
                     <Transcript />
                     {console.log(transcripts)}
 
-                    {transcripts.length > 1
+                    {
+                    transcripts.length > 0
                         ? (transcripts.map((transcript) => {
                             return (
                                 <Transcript

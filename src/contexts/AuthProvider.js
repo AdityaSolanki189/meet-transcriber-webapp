@@ -105,8 +105,6 @@ export default function AuthContextProvider({children}) {
         try {
             //Update each user group
             const docRef = await setDoc(doc(db, "/groups/" + groupName + "/meetings/", meetId), {
-                name: "speaker",
-                shithespoke: "",
                 link: meetLink,
                 title: meetTitle,
                 isActive: true
@@ -127,10 +125,9 @@ export default function AuthContextProvider({children}) {
         try {
 
             const docRef = await setDoc(doc(db, "/groups/" + groupID + "/meetings/", meetId), {
-                name: "speaker",
-                shithespoke: "",
                 title: meetTitle,
-                link: meetLink
+                link: meetLink,
+                isActive:true
             });
 
             console.log("Meet Added with docID", docRef.id);
