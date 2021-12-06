@@ -185,7 +185,7 @@ export default function Meetings() {
                                         placeholder="Enter Meet Title..."
                                         className="meet-input"/>
 
-                                    <button >
+                                    <button>
                                         Create New Meeting
                                     </button>
                                     <br/> {errorMsg}

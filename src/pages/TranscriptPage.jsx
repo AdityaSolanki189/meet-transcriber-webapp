@@ -115,9 +115,9 @@ export default function TranscriptPage() {
         }
     }
 
-    async function getAdminStatus() {
+     async function getAdminStatus() {
         try {
-            const memberRef = await getDoc(doc(db, "groups/" + groupID + "/members", localStorage.getItem("userEmail")));
+            const memberRef =  await getDoc(doc(db, "groups/" + groupID + "/members", localStorage.getItem("userEmail")));
             setIsAdmin(memberRef.data().isAdmin)
         } catch (err) {
             console.log(err)
@@ -270,10 +270,7 @@ export default function TranscriptPage() {
         
                     });
         
-                    // return (() => {
-                    //     unsubscribe();
-        
-                    // })
+                    
                 } else {
                     console.log("saved hai bhai, no rendering")
                     setDisablePlay(true)
@@ -288,7 +285,6 @@ export default function TranscriptPage() {
             unsubscribe();
 
         })
-
 
 
     }, [listen]);
@@ -375,7 +371,7 @@ export default function TranscriptPage() {
 
                 <div className="recycler-view">
                     <Transcript />
-                    {console.log(transcripts)}
+                    {console.log(transcripts,"973")}
 
                     {
                     transcripts.length > 0
