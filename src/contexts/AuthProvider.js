@@ -130,7 +130,9 @@ export default function AuthContextProvider({children}) {
                 isActive:true
             });
 
-            console.log("Meet Added with docID", docRef.id);
+            navigate(`/user-groups/${groupID}/${meetId}`);
+
+            console.log("Meet Added with docID", docRef);
         } catch (err) {
             console.error("Error adding document: ", err);
         }

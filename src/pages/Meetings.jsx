@@ -164,7 +164,7 @@ export default function Meetings() {
                                 boxShadow: "#dccaca 5px 5px 5px",
                                 borderRadius: "10px"
                             }}>
-                                <form onSubmit={submitMeetHandler}>
+                                {/* <form onSubmit={submitMeetHandler}> */}
                                     <h2>Adding a New Meeting</h2>
 
                                     <InputLabel>Meeting Link</InputLabel>
@@ -185,11 +185,13 @@ export default function Meetings() {
                                         placeholder="Enter Meet Title..."
                                         className="meet-input"/>
 
-                                    <button>
+                                    <button onClick={()=>{
+                                        submitMeetHandler()
+                                    }}>
                                         Create New Meeting
                                     </button>
                                     <br/> {errorMsg}
-                                </form>
+                                {/* </form> */}
                             </div>
                         : <div className="onHide"></div>}
                 </div>
