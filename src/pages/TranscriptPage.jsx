@@ -378,7 +378,7 @@ export default function TranscriptPage() {
                             padding: "1rem",
                             position: "absolute",
                             right: "1vw",
-                            top: "25vh",
+                            top: "30vh",
                             backgroundColor:"transparent"
                         }}
                         onClick={()=>{
