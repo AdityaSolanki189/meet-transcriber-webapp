@@ -1,6 +1,6 @@
 import "./transcript.css";
 import userImg from '../resources/user-logo.png';
-function Transcript({name, text, timeStamp}) {
+function Transcript({name, text, timeStamp,color}) {
 
     const data = [
         {
@@ -71,7 +71,7 @@ function Transcript({name, text, timeStamp}) {
                         <p>{timeStamp}</p>
                     </div>
                     <div className="transcript">
-                        <p>{text}</p>
+                        <p style={{color:color}}>{text}</p>
                     </div>
                 </div>
 

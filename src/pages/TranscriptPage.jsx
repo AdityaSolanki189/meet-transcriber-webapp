@@ -188,30 +188,65 @@ export default function TranscriptPage() {
         }
     }
 
-     function sentimentAnalysis(sentence){
+    function sentimentAnalysis(sentence) {
         console.log("in sentimentAnalysis")
-        try{
-            const response=axios.get("https://sent-api11.herokuapp.com/"+(sentence))
+        try {
+            const response = axios.get("https://sent-api11.herokuapp.com/" + (sentence))
             console.log(response)
             return response
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
 
-    async function sendForSentimentAnalysis(){
-        try{
+    async function sendForSentimentAnalysis() {
+        try {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/" + meetingID + "/transcript/"));
             docsSnapShot.forEach(doc => {
 
                 console.log(doc.data())
 
-                const response=sentimentAnalysis(doc.data().text)
+                const response = sentimentAnalysis(doc.data().text)
                 console.log(response)
 
+            });
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function getColors() {
+        try {
+            setTranscripts([
+                {
+                    text: "Transcript",
+                    speaker: "speaker",
+                    timeStamp: "00.00",
+                    color: "black"
+                }
+            ])
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/" + meetingID + "/transcript/"));
+            docsSnapShot.forEach(doc => {
+
+                setTranscripts(transcripts => [
+                    ...transcripts, {
+                        text: doc
+                            .data()
+                            .text,
+                        speaker: doc
+                            .data()
+                            .speaker,
+                        timeStamp: doc
+                            .data()
+                            .timeStamp,
+                        sentiment: doc
+                            .data()
+                            .sentiment
+                    }
+                ])
 
             });
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
@@ -358,9 +393,11 @@ export default function TranscriptPage() {
                                 : <p>{meetingTitle}</p>
 }
                         </div>
+
                         <div id="edit-image">
                             <img src={editLogo}/>
                         </div>
+
                         <Fab
                             color="primary"
                             id="play-n-pause"
@@ -379,11 +416,11 @@ export default function TranscriptPage() {
                             position: "absolute",
                             right: "1vw",
                             top: "30vh",
-                            backgroundColor:"transparent"
+                            backgroundColor: "transparent"
                         }}
-                        onClick={()=>{
-                            
-                            sendForSentimentAnalysis()
+                            onClick={() => {
+                            // sendForSentimentAnalysis();
+                            getColors()
                         }}>Perform Sentiment Analysis</button>
 
                         {isAdmin === true
@@ -417,11 +454,18 @@ export default function TranscriptPage() {
 
                     {transcripts.length > 0
                         ? (transcripts.map((transcript) => {
+                            let color;
+                            transcript.sentiment === "positive"
+                                ? color = "#1DB700"
+                                : (transcript.sentiment === "negative"
+                                    ? color = "red"
+                                    : color = "grey")
                             return (
                                 <Transcript
                                     name={transcript.speaker}
                                     timeStamp={transcript.timeStamp}
-                                    text={transcript.text}></Transcript>
+                                    text={transcript.text}
+                                    color={color}></Transcript>
                             )
                         }))
                         : (
