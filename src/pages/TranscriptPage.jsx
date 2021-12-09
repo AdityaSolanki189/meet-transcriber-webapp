@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import SideMenu from '../components/SideMenu';
 import './TranscriptPage.css';
 
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthProvider";
-import { Checkbox } from "@mui/material";
+import {useContext, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../contexts/AuthProvider";
+import {Checkbox} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Fab from '@mui/material/Fab';
@@ -17,11 +17,19 @@ import calendar from '../resources/calendar-logo.png';
 import clock from '../resources/clock-logo.png';
 import Transcript from '../components/Transcript';
 import TranscriptCard from '../components/TranscriptCard';
-import { db } from '../config/Firebase';
-import { collection, addDoc, setDoc,updateDoc } from "@firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
-import { useParams } from 'react-router-dom';
-import { query, where, onSnapshot, orderBy, limit , getDocs} from "firebase/firestore";
+import {db} from '../config/Firebase';
+import {collection, addDoc, setDoc, updateDoc} from "@firebase/firestore";
+import {doc, getDoc} from "firebase/firestore";
+import {useParams} from 'react-router-dom';
+import axios from 'axios';
+import {
+    query,
+    where,
+    onSnapshot,
+    orderBy,
+    limit,
+    getDocs
+} from "firebase/firestore";
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const mic = new SpeechRecognition();
@@ -32,20 +40,21 @@ mic.lang = "en-US";
 
 export default function TranscriptPage() {
 
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
     const navigate = useNavigate();
-    const { modeStyle, theme, setTheme } = useContext(AuthContext);
+    const {modeStyle, theme, setTheme} = useContext(AuthContext);
 
-    const { meetingID, groupID } = useParams();
+    const {meetingID, groupID} = useParams();
 
     console.log(meetingID, groupID)
 
     const timestamp = 'Monday, 11:08 AM';
     const meetLength = '2.01';
-    const [speakersList, setSpeakers] = useState(['Loading...']);
-    
-    async function getSpeakers(){
-        try{
+    const [speakersList,
+        setSpeakers] = useState(['Loading...']);
+
+    async function getSpeakers() {
+        try {
             const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/members"));
 
             console.log(docsSnapShot);
@@ -55,29 +64,28 @@ export default function TranscriptPage() {
 
                 setSpeakers(speakersList => [
                     ...speakersList,
-                    doc.data().name
+                    doc
+                        .data()
+                        .name
                 ])
 
             });
-        }
-        catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
 
-
-    const [meetingTitle, setMeetingTitle] = useState("Google Meet - Mon,  Oct 25,  2021 at 11:08 am");
-    async function getMeetingTitle(){
-        try{
+    const [meetingTitle,
+        setMeetingTitle] = useState("Google Meet - Mon,  Oct 25,  2021 at 11:08 am");
+    async function getMeetingTitle() {
+        try {
             const docSnap = await getDoc(doc(db, "/groups/" + groupID + "/meetings/" + meetingID));
             console.log(docSnap);
             setMeetingTitle(docSnap.data().title);
-        }
-        catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
-    
 
     const [listen,
         setListen] = useState(false);
@@ -96,9 +104,11 @@ export default function TranscriptPage() {
 
     const [disablePlay,
         setDisablePlay] = useState(false);
-    
-    const [meetTitle, setBox] = useState(meetingTitle);
-    const [TitleBox, setTitle] = useState(false);
+
+    const [meetTitle,
+        setBox] = useState(meetingTitle);
+    const [TitleBox,
+        setTitle] = useState(false);
 
     console.log(currentUser, "63")
 
@@ -115,9 +125,9 @@ export default function TranscriptPage() {
         }
     }
 
-     async function getAdminStatus() {
+    async function getAdminStatus() {
         try {
-            const memberRef =  await getDoc(doc(db, "groups/" + groupID + "/members", localStorage.getItem("userEmail")));
+            const memberRef = await getDoc(doc(db, "groups/" + groupID + "/members", localStorage.getItem("userEmail")));
             setIsAdmin(memberRef.data().isAdmin)
         } catch (err) {
             console.log(err)
@@ -130,8 +140,7 @@ export default function TranscriptPage() {
         else 
             html += speakersList[i];
         }
-  
-
+    
     async function setActiveStatus() {
         try {
             const response = await updateDoc(doc(db, "groups/" + groupID + "/meetings/", meetingID), {isActive: false});
@@ -152,9 +161,9 @@ export default function TranscriptPage() {
         }
     }
 
-    async function getAllTranscripts(){
-        try{
-            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/"+meetingID+"/transcript/"));
+    async function getAllTranscripts() {
+        try {
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/" + meetingID + "/transcript/"));
             docsSnapShot.forEach(doc => {
 
                 console.log(doc.data())
@@ -174,6 +183,34 @@ export default function TranscriptPage() {
                 ])
 
             });
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+     function sentimentAnalysis(sentence){
+        console.log("in sentimentAnalysis")
+        try{
+            const response=axios.get("https://sent-api11.herokuapp.com/"+(sentence))
+            console.log(response)
+            return response
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    async function sendForSentimentAnalysis(){
+        try{
+            const docsSnapShot = await getDocs(collection(db, "/groups/" + groupID + "/meetings/" + meetingID + "/transcript/"));
+            docsSnapShot.forEach(doc => {
+
+                console.log(doc.data())
+
+                const response=sentimentAnalysis(doc.data().text)
+                console.log(response)
+
+
+            });
         }catch(err){
             console.log(err)
         }
@@ -181,18 +218,15 @@ export default function TranscriptPage() {
 
     useEffect(() => {
 
-
-
         getSpeakers();
         getMeetingTitle();
 
-        var unsubscribe=()=>{};
+        var unsubscribe = () => {};
 
         (async() => {
 
             try {
                 await getAdminStatus();
-
 
                 const handleListen = () => {
                     if (listen) {
@@ -213,43 +247,43 @@ export default function TranscriptPage() {
                             console.log("Stopped on Click");
                         };
                     }
-        
+
                     mic.onstart = () => {
                         console.log("Mics ON!");
                     };
-        
+
                     mic.onresult = (event) => {
                         console.log("result incoming")
-        
+
                         const transcriptArray = Array
                             .from(event.results)
                             .map((result) => result[0])
                             .map((result) => result.transcript)
-        
+
                         console.log(transcriptArray[transcriptArray.length - 1]);
-        
+
                         postTranscriptToDb(transcriptArray[transcriptArray.length - 1], currentUser.displayName, new Date().toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: "2-digit",
                             second: "2-digit"
                         }))
-        
+
                         mic.onerror = (event) => {
                             console.log(event.error);
                         };
                     };
                 };
-        
+
                 if (await getActiveStatusOnLoad() === true) {
                     handleListen();
                     setDisablePlay(false)
                     const q = query(collection(db, "groups/" + groupID + "/meetings/" + meetingID + "/transcript"), orderBy('timeStamp', 'desc'), limit(1));
-        
-                     unsubscribe = onSnapshot(q, (querySnapshot) => {
-        
+
+                    unsubscribe = onSnapshot(q, (querySnapshot) => {
+
                         querySnapshot.forEach((doc) => {
                             console.log(doc.id, " ", doc.data(), "...hmm")
-        
+
                             if (transcripts[transcripts.length - 1].timeStamp !== doc.data().timeStamp) {
                                 setTranscripts(transcripts => [
                                     ...transcripts, {
@@ -265,16 +299,15 @@ export default function TranscriptPage() {
                                     }
                                 ])
                             }
-        
+
                         });
-        
+
                     });
-        
-                    
+
                 } else {
                     console.log("saved hai bhai, no rendering")
                     setDisablePlay(true)
-                     await getAllTranscripts();
+                    await getAllTranscripts();
                 }
             } catch (err) {
                 console.log(err)
@@ -286,13 +319,12 @@ export default function TranscriptPage() {
 
         })
 
-
     }, [listen]);
 
     return (
         <div className="Page-wrapper">
             <div className="Page-nav">
-                <SideMenu />
+                <SideMenu/>
             </div>
             <div className="Page-main">
                 {" "}
@@ -304,30 +336,30 @@ export default function TranscriptPage() {
                         icon={< DarkModeOutlinedIcon />}
                         checkedIcon={< DarkModeIcon />}
                         onChange={() => {
-                            theme === "LIGHT"
-                                ? setTheme("DARK")
-                                : setTheme("LIGHT");
-                        }}
+                        theme === "LIGHT"
+                            ? setTheme("DARK")
+                            : setTheme("LIGHT");
+                    }}
                         sx={{
-                            margin: "1rem"
-                        }} />
+                        margin: "1rem"
+                    }}/>
                 </div>
                 <div className="header">
                     <div className="heading">
-                        <div id="meet-name" onClick={() => {
+                        <div
+                            id="meet-name"
+                            onClick={() => {
                             setBox(true);
                         }}>
-                            {
-                                TitleBox ?
-                                    <div className="edit-title">
-                                        <input type="text" onChange={event => setTitle(event.target.value)} />
+                            {TitleBox
+                                ? <div className="edit-title">
+                                        <input type="text" onChange={event => setTitle(event.target.value)}/>
                                     </div>
-                                    : <p>{ meetingTitle }</p>
-
-                            }
+                                : <p>{meetingTitle}</p>
+}
                         </div>
                         <div id="edit-image">
-                            <img src={editLogo} />
+                            <img src={editLogo}/>
                         </div>
                         <Fab
                             color="primary"
@@ -337,11 +369,22 @@ export default function TranscriptPage() {
                         }}
                             disabled={disablePlay}>
                             {listen
-                                ? <PauseIcon />
-                                : <PlayArrowIcon />}
+                                ? <PauseIcon/>
+                                : <PlayArrowIcon/>}
                         </Fab>
 
-                        {console.log(isAdmin, "233")}
+                        <button
+                            style={{
+                            padding: "1rem",
+                            position: "absolute",
+                            right: "1vw",
+                            top: "25vh",
+                            backgroundColor:"transparent"
+                        }}
+                        onClick={()=>{
+                            
+                            sendForSentimentAnalysis()
+                        }}>Perform Sentiment Analysis</button>
 
                         {isAdmin === true
                             ? <Fab
@@ -358,35 +401,33 @@ export default function TranscriptPage() {
 
                     </div>
                     <div className="date-n-time">
-                        <img src={calendar} />
+                        <img src={calendar}/>
                         <p>{timestamp}</p>
-                        <img src={clock} />
+                        <img src={clock}/>
                         <p>{meetLength}</p>
                     </div>
                     <p id="speaker">SPEAKERS</p>
                     <div className="speakers-list">
-                        <p>{ html }</p>
+                        <p>{html}</p>
                     </div>
                 </div>
 
                 <div className="recycler-view">
-                    <Transcript />
-                    {console.log(transcripts,"973")}
+                    <Transcript/> {console.log(transcripts, "973")}
 
-                    {
-                    transcripts.length > 0
+                    {transcripts.length > 0
                         ? (transcripts.map((transcript) => {
                             return (
                                 <Transcript
                                     name={transcript.speaker}
                                     timeStamp={transcript.timeStamp}
                                     text={transcript.text}></Transcript>
-                            ) 
+                            )
                         }))
                         : (
                             <div>No transcript yet</div>
                         )
-                    }
+}
                 </div>
                 {/* <div className="card-view">
                     <TranscriptCard />
